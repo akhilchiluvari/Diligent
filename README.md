@@ -15,6 +15,9 @@
 - 📄 **Full Hackathon Submission Article:** [`SUBMISSION_ARTICLE.md`](SUBMISSION_ARTICLE.md)
 - 📢 **Social Launch Posts (Twitter Thread & LinkedIn):** [`SOCIAL_POSTS.md`](SOCIAL_POSTS.md)
 - 🎥 **2-Minute Video Demo & Presentation Script:** [`VIDEO_SCRIPT.md`](VIDEO_SCRIPT.md)
+- 🗄️ **Supabase & Connection Pooler Guide:** [`SUPABASE_INTEGRATION_GUIDE.md`](SUPABASE_INTEGRATION_GUIDE.md)
+- 📜 **PostgreSQL Database Schema:** [`supabase_schema.sql`](supabase_schema.sql)
+- ☁️ **Universal Cloud & Vercel Deployment:** [`DEPLOYMENT.md`](DEPLOYMENT.md)
 - 🧪 **Multi-Agent Automated Test Suite:** [`server/tests/agentTest.js`](server/tests/agentTest.js)
 
 ---

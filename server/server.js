@@ -177,8 +177,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Export app for testability, start if direct
-if (process.env.NODE_ENV !== 'test') {
+// Export app for testability, start if direct (avoid binding port inside Vercel serverless functions)
+if (!process.env.VERCEL && process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
     console.log(`[Diligent Server] Multi-Agent Operational Engine online at http://localhost:${PORT}`);
     console.log(`[Diligent Server] Groq LPU Model: ${process.env.GROQ_MODEL || 'openai/gpt-oss-120b'} (Fallback enabled: ${process.env.USE_MOCK_FALLBACK})`);

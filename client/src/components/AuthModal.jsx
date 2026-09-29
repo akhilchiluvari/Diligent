@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { X, Lock, Mail, Store, User, MapPin, Building, ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Lock, Mail, Store, User, MapPin, Building, ArrowRight, CheckCircle2, AlertCircle, Database } from 'lucide-react';
 
 export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
   const [tab, setTab] = useState('login'); // 'login' | 'register'
@@ -15,6 +15,18 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [cloudStatus, setCloudStatus] = useState(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      fetch('/api/auth/status')
+        .then(r => r.json())
+        .then(data => {
+          if (data.success) setCloudStatus(data);
+        })
+        .catch(() => {});
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -134,6 +146,40 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
           >
             Create Store Account
           </button>
+        </div>
+
+        {/* Cloud Connectivity Telemetry Pill */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '7px 12px',
+          borderRadius: '8px',
+          backgroundColor: cloudStatus?.configured ? 'rgba(16, 185, 129, 0.08)' : 'rgba(234, 88, 12, 0.08)',
+          border: cloudStatus?.configured ? '1px solid rgba(16, 185, 129, 0.25)' : '1px solid rgba(234, 88, 12, 0.25)',
+          marginBottom: '16px',
+          fontSize: '0.74rem'
+        }}>
+          <span style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            color: cloudStatus?.configured ? '#10b981' : '#ea580c',
+            fontWeight: 600
+          }}>
+            <span style={{
+              width: '7px',
+              height: '7px',
+              borderRadius: '50%',
+              backgroundColor: cloudStatus?.configured ? '#10b981' : '#ea580c',
+              boxShadow: cloudStatus?.configured ? '0 0 8px #10b981' : 'none'
+            }} />
+            <Database size={13} />
+            <span>{cloudStatus?.configured ? 'Supabase PostgreSQL Cloud Active' : 'Resilient Offline Store (Supabase Ready)'}</span>
+          </span>
+          <span style={{ color: 'var(--text-tertiary)', fontSize: '0.68rem', fontFamily: 'monospace' }}>
+            {cloudStatus?.poolerType || 'Port 6543 / 5432'}
+          </span>
         </div>
 
         {error && (
