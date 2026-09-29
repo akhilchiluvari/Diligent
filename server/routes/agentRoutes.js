@@ -59,11 +59,11 @@ router.get('/status', (req, res) => {
 // Natural Language Chat with Orchestrator
 router.post('/chat', async (req, res) => {
   try {
-    const { query } = req.body;
+    const { query, language = 'en', history = [] } = req.body;
     if (!query || typeof query !== 'string') {
       return res.status(400).json({ success: false, error: 'Query string is required.' });
     }
-    const result = await orchestratorAgent.handleUserQuery(query);
+    const result = await orchestratorAgent.handleUserQuery(query, { language, history });
     res.json({ success: true, result });
   } catch (err) {
     console.error('Agent chat error:', err);

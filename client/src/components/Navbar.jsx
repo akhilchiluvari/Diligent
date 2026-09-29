@@ -1,158 +1,186 @@
 import React from 'react';
-import { Bot, ShieldCheck, ShieldAlert, Cpu, Sparkles, Store, Sun, Moon, HelpCircle } from 'lucide-react';
+import { Bot, ShieldCheck, ShieldAlert, Cpu, Sparkles, Store, Sun, Moon, LogIn, User, LogOut } from 'lucide-react';
 
-export default function Navbar({ business, termsAccepted, onOpenLegal, activeProvider, theme, onToggleTheme, onOpenCopilot }) {
+export default function Navbar({
+  business,
+  termsAccepted,
+  onOpenLegal,
+  theme,
+  onToggleTheme,
+  onOpenCopilot,
+  currentUser,
+  onOpenAuth,
+  onLogout,
+  activeTab,
+  onSelectTab
+}) {
   return (
     <header style={{
-      borderBottom: '1px solid var(--border-subtle)',
-      backgroundColor: 'var(--bg-surface)',
       position: 'sticky',
-      top: 0,
-      zIndex: 40,
-      padding: '10px 24px',
-      transition: 'background-color 0.2s ease, border-color 0.2s ease'
+      top: '16px',
+      zIndex: 50,
+      maxWidth: '1280px',
+      margin: '0 auto',
+      padding: '0 20px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      gap: '12px'
     }}>
-      <div style={{
-        maxWidth: '1440px',
-        margin: '0 auto',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: '12px'
-      }}>
-        {/* Brand & Identity */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+      {/* Dark Navy Pill Navigation Header (Exact Reference Match: Image 1) */}
+      <div className="nav-navy-pill" style={{ width: '100%', justifyContent: 'space-between' }}>
+        {/* Logo with Checkmark (Matching Image 1) */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }} onClick={() => onSelectTab('overview')}>
           <div style={{
-            width: '36px',
-            height: '36px',
-            borderRadius: '9px',
-            background: 'var(--accent-gradient)',
+            width: '26px',
+            height: '26px',
+            borderRadius: '6px',
+            backgroundColor: '#ffffff',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#ffffff',
-            boxShadow: '0 2px 8px rgba(99, 102, 241, 0.3)'
+            color: '#1e293b'
           }}>
-            <Bot size={20} />
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
           </div>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '1.15rem', fontWeight: 800, letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
-                DILIGENT
-              </span>
-              <span className="badge-clean badge-clean-accent">
-                <Sparkles size={11} /> VC Platform
-              </span>
-            </div>
-            <p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
-              Autonomous Multi-Agent Retail OS & Business Consultant
-            </p>
-          </div>
+          <span className="font-serif-headline" style={{ fontSize: '1.35rem', fontWeight: 700, color: '#ffffff', letterSpacing: '-0.02em' }}>
+            Diligent.
+          </span>
         </div>
 
-        {/* Right Controls */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-          {/* Store Pill */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            backgroundColor: 'var(--bg-surface-elevated)',
-            border: '1px solid var(--border-subtle)',
-            padding: '5px 12px',
-            borderRadius: '8px',
-            fontSize: '0.78rem',
-            color: 'var(--text-primary)'
-          }}>
-            <Store size={13} color="var(--accent)" />
-            <span style={{ fontWeight: 600 }}>{business?.name || 'Sri Balaji Smart Retail'}</span>
-            <span style={{ color: 'var(--text-tertiary)' }}>• Madhapur</span>
-          </div>
+        {/* Center Nav Links */}
+        <nav style={{ display: 'flex', alignItems: 'center', gap: '22px' }}>
+          {[
+            { id: 'overview', label: 'Overview' },
+            { id: 'teammates', label: 'AI Teammates' },
+            { id: 'loop', label: 'Operating Loop' },
+            { id: 'inventory', label: 'Inventory & POS' },
+            { id: 'divisions', label: 'Team Divisions' },
+            { id: 'marketing', label: 'Marketing CMS' }
+          ].map(item => (
+            <button
+              key={item.id}
+              onClick={() => onSelectTab(item.id)}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: activeTab === item.id ? '#ffffff' : '#94a3b8',
+                fontWeight: activeTab === item.id ? 700 : 500,
+                fontSize: '0.84rem',
+                cursor: 'pointer',
+                transition: 'color 0.15s ease',
+                padding: '4px 0'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.color = '#ffffff'}
+              onMouseLeave={(e) => {
+                if (activeTab !== item.id) e.currentTarget.style.color = '#94a3b8';
+              }}
+            >
+              {item.label}
+            </button>
+          ))}
+        </nav>
 
-          {/* Model Pill */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            backgroundColor: 'var(--badge-blue-bg)',
-            border: '1px solid var(--border-subtle)',
-            padding: '5px 10px',
-            borderRadius: '8px',
-            fontSize: '0.75rem',
-            color: 'var(--badge-blue-text)',
-            fontWeight: 600
-          }}>
-            <Cpu size={12} />
-            <span>Groq 120B LPU</span>
-          </div>
-
-          {/* Swarm Sync */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            backgroundColor: 'var(--badge-emerald-bg)',
-            border: '1px solid var(--border-subtle)',
-            padding: '5px 10px',
-            borderRadius: '8px',
-            fontSize: '0.75rem',
-            color: 'var(--badge-emerald-text)',
-            fontWeight: 600
-          }}>
-            <div className="pulse-indicator" />
-            <span>5 Agents Live</span>
-          </div>
-
-          {/* Ask Agent Header Trigger */}
-          <button
-            onClick={() => onOpenCopilot()}
-            className="btn-agent-trigger"
-            style={{ padding: '6px 12px', fontSize: '0.78rem' }}
-          >
-            <Sparkles size={13} />
-            <span>Ask Copilot</span>
-          </button>
-
-          {/* Legal Compliance */}
-          <button
-            onClick={onOpenLegal}
-            style={{
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '5px',
-              padding: '5px 10px',
-              borderRadius: '8px',
-              border: termsAccepted ? '1px solid var(--badge-emerald-bg)' : '1px solid var(--badge-rose-bg)',
-              backgroundColor: termsAccepted ? 'var(--badge-emerald-bg)' : 'var(--badge-rose-bg)',
-              color: termsAccepted ? 'var(--badge-emerald-text)' : 'var(--badge-rose-text)',
-              fontSize: '0.75rem',
-              fontWeight: 600
-            }}
-          >
-            {termsAccepted ? <ShieldCheck size={13} /> : <ShieldAlert size={13} />}
-            <span>{termsAccepted ? 'Compliance Verified' : 'Sign Liability Waiver'}</span>
-          </button>
-
-          {/* Theme Toggle (Sun / Moon) */}
+        {/* Right CTA Button & Utilities */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          {/* Theme Switcher */}
           <button
             onClick={onToggleTheme}
             style={{
-              background: 'var(--bg-surface-elevated)',
-              border: '1px solid var(--border-subtle)',
-              color: 'var(--text-secondary)',
+              background: 'rgba(255, 255, 255, 0.1)',
+              border: 'none',
+              color: '#ffffff',
               cursor: 'pointer',
-              padding: '6px 10px',
-              borderRadius: '8px',
+              padding: '6px',
+              borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.15s ease'
+              justifyContent: 'center'
             }}
-            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            title={theme === 'dark' ? 'Switch to Light' : 'Switch to Dark'}
           >
-            {theme === 'dark' ? <Sun size={15} color="#fbbf24" /> : <Moon size={15} color="#6366f1" />}
+            {theme === 'dark' ? <Sun size={14} color="#fbbf24" /> : <Moon size={14} color="#94a3b8" />}
+          </button>
+
+          {/* Legal Pill */}
+          <button
+            onClick={onOpenLegal}
+            style={{
+              background: termsAccepted ? 'rgba(16, 185, 129, 0.2)' : 'rgba(244, 63, 94, 0.2)',
+              border: 'none',
+              color: termsAccepted ? '#34d399' : '#fb7185',
+              cursor: 'pointer',
+              padding: '4px 10px',
+              borderRadius: '9999px',
+              fontSize: '0.72rem',
+              fontWeight: 600,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+          >
+            {termsAccepted ? <ShieldCheck size={12} /> : <ShieldAlert size={12} />}
+            <span>{termsAccepted ? 'Verified' : 'Waiver'}</span>
+          </button>
+
+          {/* Auth Button or User Badge */}
+          {currentUser ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{
+                fontSize: '0.76rem',
+                color: '#ffffff',
+                backgroundColor: 'rgba(255, 255, 255, 0.12)',
+                padding: '4px 10px',
+                borderRadius: '9999px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px'
+              }}>
+                <User size={12} />
+                <span>{currentUser.name.split(' ')[0]}</span>
+              </div>
+              <button
+                onClick={onLogout}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#94a3b8',
+                  cursor: 'pointer',
+                  padding: '4px'
+                }}
+                title="Sign out"
+              >
+                <LogOut size={14} />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={onOpenAuth}
+              style={{
+                background: 'rgba(255, 255, 255, 0.12)',
+                color: '#ffffff',
+                border: 'none',
+                borderRadius: '9999px',
+                padding: '7px 14px',
+                fontSize: '0.78rem',
+                fontWeight: 600,
+                cursor: 'pointer'
+              }}
+            >
+              Sign In
+            </button>
+          )}
+
+          {/* Hero Terracotta Pill Button (Matching Image 1: "Build your AI growth team") */}
+          <button
+            onClick={() => onOpenCopilot()}
+            className="btn-terracotta"
+            style={{ padding: '7px 16px', fontSize: '0.8rem' }}
+          >
+            <span>Launch Copilot</span>
+            <Sparkles size={13} />
           </button>
         </div>
       </div>

@@ -6,6 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { dbService } from './services/dbService.js';
 import agentRoutes from './routes/agentRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 
 dotenv.config();
 
@@ -18,7 +19,8 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Multi-Agent System Routes
+// Multi-Agent & Auth Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/agents', agentRoutes);
 
 // --- Core API Routes ---

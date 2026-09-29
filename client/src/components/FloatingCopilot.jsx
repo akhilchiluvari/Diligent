@@ -1,5 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Sparkles, X, Send, Bot, User, ArrowUp, ChevronDown, ChevronUp, CheckCircle, Tag, CornerDownLeft, Maximize2, Minimize2, Cpu } from 'lucide-react';
+import { Sparkles, X, Send, Bot, User, ArrowUp, ChevronDown, ChevronUp, CheckCircle, Tag, CornerDownLeft, Maximize2, Minimize2, Cpu, Globe, History, Plus, MessageSquare } from 'lucide-react';
+import { marked } from 'marked';
+
+// Configure marked for clean, safe artifact generation
+marked.setOptions({
+  gfm: true,
+  breaks: true
+});
 
 export default function FloatingCopilot({
   isOpen,
@@ -14,8 +21,23 @@ export default function FloatingCopilot({
   onExecuteAction
 }) {
   const [input, setInput] = useState('');
-  const [showThinking, setShowThinking] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
+  const [showHistory, setShowHistory] = useState(false);
+  
+  // Stored chat history sessions
+  const [savedSessions, setSavedSessions] = useState(() => {
+    try {
+      const stored = localStorage.getItem('diligent_chat_sessions');
+      return stored ? JSON.parse(stored) : [
+        { id: 'sess_1', title: 'Inventory Stockout & Barcode Audit', time: 'Today' },
+        { id: 'sess_2', title: 'Workforce Coordination & Shifts', time: 'Yesterday' }
+      ];
+    } catch (e) {
+      return [];
+    }
+  });
+
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -29,7 +51,7 @@ export default function FloatingCopilot({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatMessages, isWaiting]);
 
-  // Handle hotkey Cmd+K / Ctrl+K
+  // Hotkey Cmd+K / Ctrl+K
   useEffect(() => {
     const handleKeyDown = (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -45,36 +67,34 @@ export default function FloatingCopilot({
     e?.preventDefault();
     if (!input.trim() || isWaiting) return;
 
-    // Prepend attached context if available
     let promptToSend = input.trim();
     if (attachedContext) {
       promptToSend = `[Context Attached: ${attachedContext.title} | Details: ${attachedContext.details}]\n\nUser Question: ${promptToSend}`;
     }
 
-    onSendMessage(promptToSend);
+    onSendMessage(promptToSend, { language: selectedLanguage });
     setInput('');
   };
 
-  // Dynamic suggestion chips based on active tab and attached context
   const getContextualSuggestions = () => {
     if (attachedContext) {
       return [
-        `What is the best action for ${attachedContext.title}?`,
-        `Draft an immediate plan for this item`,
-        `How does this impact store revenue?`
+        `What is the best immediate action for ${attachedContext.title}?`,
+        `Draft an execution plan for this item`,
+        `How does this impact store profit margins?`
       ];
     }
 
     switch (activeTab) {
       case 'inventory':
         return [
-          "What products are at critical stockout risk?",
+          "What products are at critical stockout risk right now?",
           "Analyze ₹1.48L trapped in dead stock and how to liquidate",
           "Draft automated supplier purchase orders"
         ];
       case 'marketing':
         return [
-          "Create 3 high-converting Instagram reels captions",
+          "Create 3 high-converting Instagram reels hooks",
           "Draft a WhatsApp VIP broadcast for Madhapur techies",
           "Generate a Headless CMS promotional banner"
         ];
@@ -88,13 +108,13 @@ export default function FloatingCopilot({
         return [
           "Evaluate Pooja Sharma's sales performance and bonus tier",
           "Realign evening shifts for peak Cyber Towers traffic",
-          "Calculate store associate conversion efficiency"
+          "Give plans to expand the team and hire new staff"
         ];
       default:
         return [
           "Synthesize full 30-60-90 day SMB scaling roadmap",
           "How much capital is trapped in stagnant inventory?",
-          "Who is our top performing associate this month?"
+          "How should the team divisions coordinate with each other?"
         ];
     }
   };
@@ -112,7 +132,7 @@ export default function FloatingCopilot({
             bottom: '24px',
             right: '24px',
             zIndex: 90,
-            background: 'var(--accent-gradient)',
+            backgroundColor: 'var(--accent-terracotta)',
             color: '#ffffff',
             border: 'none',
             borderRadius: '9999px',
@@ -127,12 +147,12 @@ export default function FloatingCopilot({
           onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
           onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
         >
-          <div className="pulse-indicator" style={{ backgroundColor: '#ffffff' }} />
+          <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#ffffff' }} />
           <Sparkles size={16} />
           <span style={{ fontWeight: 700, fontSize: '0.88rem' }}>Ask Diligent AI</span>
           <span style={{
             fontSize: '0.7rem',
-            backgroundColor: 'rgba(255, 255, 255, 0.2)',
+            backgroundColor: 'rgba(255, 255, 255, 0.25)',
             padding: '2px 7px',
             borderRadius: '4px',
             fontFamily: 'monospace',
@@ -143,16 +163,16 @@ export default function FloatingCopilot({
         </button>
       )}
 
-      {/* Floating Copilot Modal / Drawer */}
+      {/* Floating Modal Drawer */}
       {isOpen && (
         <div style={{
           position: 'fixed',
           bottom: isExpanded ? '20px' : '24px',
           right: isExpanded ? '20px' : '24px',
-          width: isExpanded ? 'calc(100vw - 40px)' : '480px',
-          maxWidth: '800px',
-          height: isExpanded ? 'calc(100vh - 40px)' : '650px',
-          maxHeight: '90vh',
+          width: isExpanded ? 'calc(100vw - 40px)' : '520px',
+          maxWidth: '850px',
+          height: isExpanded ? 'calc(100vh - 40px)' : '680px',
+          maxHeight: '92vh',
           backgroundColor: 'var(--bg-surface)',
           border: '1px solid var(--border-medium)',
           borderRadius: '16px',
@@ -165,7 +185,7 @@ export default function FloatingCopilot({
         }}>
           {/* Header */}
           <div style={{
-            padding: '14px 18px',
+            padding: '12px 18px',
             borderBottom: '1px solid var(--border-subtle)',
             backgroundColor: 'var(--bg-surface-elevated)',
             display: 'flex',
@@ -177,30 +197,72 @@ export default function FloatingCopilot({
                 width: '32px',
                 height: '32px',
                 borderRadius: '8px',
-                background: 'var(--accent-gradient)',
+                backgroundColor: 'var(--accent-terracotta)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: '#ffffff'
+                color: '#ffffff',
+                fontFamily: 'Newsreader, serif',
+                fontWeight: 700
               }}>
-                <Sparkles size={16} />
+                Di
               </div>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <h3 style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                  <h3 className="font-serif-headline" style={{ fontSize: '1.1rem', color: 'var(--text-primary)' }}>
                     Diligent Copilot
                   </h3>
                   <span className="badge-clean badge-clean-accent" style={{ fontSize: '0.68rem' }}>
-                    <Cpu size={10} /> Groq 120B LPU
+                    <Cpu size={10} /> Groq 120B
                   </span>
                 </div>
                 <p style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)' }}>
-                  Autonomous Virtual Consultant • Contextual Swarm
+                  Autonomous Business Consultant • Multi-Agent Memory
                 </p>
               </div>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {/* Multilingual Selector */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', backgroundColor: 'var(--bg-surface)', padding: '3px 8px', borderRadius: '6px', border: '1px solid var(--border-subtle)' }}>
+                <Globe size={13} color="var(--text-tertiary)" />
+                <select
+                  value={selectedLanguage}
+                  onChange={(e) => setSelectedLanguage(e.target.value)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--text-secondary)',
+                    fontSize: '0.74rem',
+                    fontWeight: 600,
+                    outline: 'none',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <option value="en">English (US)</option>
+                  <option value="te">తెలుగు (Telugu)</option>
+                  <option value="hi">हिन्दी (Hindi)</option>
+                  <option value="ta">தமிழ் (Tamil)</option>
+                  <option value="es">Español (ES)</option>
+                </select>
+              </div>
+
+              {/* History Toggle */}
+              <button
+                onClick={() => setShowHistory(!showHistory)}
+                style={{
+                  background: showHistory ? 'var(--accent-subtle)' : 'none',
+                  border: '1px solid var(--border-subtle)',
+                  color: showHistory ? 'var(--accent-terracotta)' : 'var(--text-secondary)',
+                  cursor: 'pointer',
+                  padding: '5px',
+                  borderRadius: '6px'
+                }}
+                title="Conversation Memory & History"
+              >
+                <History size={14} />
+              </button>
+
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
                 style={{
@@ -208,13 +270,12 @@ export default function FloatingCopilot({
                   border: 'none',
                   color: 'var(--text-secondary)',
                   cursor: 'pointer',
-                  padding: '4px',
-                  borderRadius: '6px'
+                  padding: '4px'
                 }}
-                title={isExpanded ? "Collapse" : "Expand"}
               >
-                {isExpanded ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+                {isExpanded ? <Minimize2 size={15} /> : <Maximize2 size={15} />}
               </button>
+
               <button
                 onClick={onClose}
                 style={{
@@ -222,26 +283,67 @@ export default function FloatingCopilot({
                   border: 'none',
                   color: 'var(--text-secondary)',
                   cursor: 'pointer',
-                  padding: '4px',
-                  borderRadius: '6px'
+                  padding: '4px'
                 }}
-                title="Close (Esc)"
               >
                 <X size={18} />
               </button>
             </div>
           </div>
 
-          {/* Active Context Bar */}
+          {/* History Drawer if toggled */}
+          {showHistory && (
+            <div style={{
+              backgroundColor: 'var(--bg-surface-elevated)',
+              borderBottom: '1px solid var(--border-subtle)',
+              padding: '12px 16px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
+              maxHeight: '160px',
+              overflowY: 'auto'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-tertiary)', letterSpacing: '0.05em' }}>
+                  RECENT CONVERSATIONS (PERSISTENT MEMORY)
+                </span>
+                <span className="badge-clean badge-clean-emerald">Synced</span>
+              </div>
+              {savedSessions.map(s => (
+                <div
+                  key={s.id}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '6px 10px',
+                    borderRadius: '6px',
+                    backgroundColor: 'var(--bg-surface)',
+                    border: '1px solid var(--border-subtle)',
+                    fontSize: '0.78rem',
+                    color: 'var(--text-primary)',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <MessageSquare size={13} color="var(--accent-terracotta)" />
+                    <span>{s.title}</span>
+                  </div>
+                  <span style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)' }}>{s.time}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Active Context Banner */}
           <div style={{
-            padding: '8px 16px',
+            padding: '7px 16px',
             backgroundColor: 'var(--bg-page)',
             borderBottom: '1px solid var(--border-subtle)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            fontSize: '0.75rem',
-            color: 'var(--text-secondary)'
+            fontSize: '0.74rem'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden' }}>
               <span style={{ color: 'var(--text-tertiary)' }}>Scope:</span>
@@ -262,18 +364,18 @@ export default function FloatingCopilot({
                 style={{
                   background: 'none',
                   border: 'none',
-                  color: 'var(--text-tertiary)',
+                  color: 'var(--accent-terracotta)',
                   fontSize: '0.7rem',
                   cursor: 'pointer',
-                  textDecoration: 'underline'
+                  fontWeight: 600
                 }}
               >
-                Detach Context
+                Clear Attachment
               </button>
             )}
           </div>
 
-          {/* Messages Scroll View */}
+          {/* Messages Stream with Formatted Artifact Rendering */}
           <div style={{
             flex: 1,
             padding: '16px',
@@ -289,7 +391,7 @@ export default function FloatingCopilot({
                   display: 'flex',
                   gap: '10px',
                   alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start',
-                  maxWidth: '88%'
+                  maxWidth: '90%'
                 }}
               >
                 {msg.sender !== 'user' && (
@@ -303,18 +405,19 @@ export default function FloatingCopilot({
                     alignItems: 'center',
                     justifyContent: 'center',
                     flexShrink: 0,
-                    marginTop: '2px'
+                    marginTop: '2px',
+                    color: 'var(--accent-terracotta)'
                   }}>
-                    <Bot size={15} color="var(--accent)" />
+                    <Bot size={15} />
                   </div>
                 )}
 
                 <div style={{
-                  backgroundColor: msg.sender === 'user' ? 'var(--accent)' : 'var(--bg-surface-elevated)',
+                  backgroundColor: msg.sender === 'user' ? 'var(--accent-navy)' : 'var(--bg-surface-elevated)',
                   color: msg.sender === 'user' ? '#ffffff' : 'var(--text-primary)',
-                  border: msg.sender === 'user' ? 'none' : '1px solid var(--border-subtle)',
+                  border: '1px solid var(--border-subtle)',
                   borderRadius: '12px',
-                  padding: '12px 16px',
+                  padding: '14px 18px',
                   fontSize: '0.86rem',
                   lineHeight: 1.6,
                   boxShadow: 'var(--card-shadow)'
@@ -323,25 +426,31 @@ export default function FloatingCopilot({
                     <div style={{
                       fontSize: '0.72rem',
                       fontWeight: 700,
-                      color: msg.sender === 'user' ? '#ffffff' : 'var(--accent-light)',
+                      color: 'var(--accent-terracotta)',
                       marginBottom: '6px',
                       display: 'flex',
                       alignItems: 'center',
                       gap: '5px'
                     }}>
-                      <Sparkles size={11} /> Handled by {msg.delegatedAgent}
+                      <Sparkles size={11} /> {msg.delegatedAgent}
                     </div>
                   )}
 
-                  <div style={{ whiteSpace: 'pre-wrap' }}>
-                    {msg.text}
-                  </div>
+                  {/* Render cleanly with marked for bot responses, or plain text for user */}
+                  {msg.sender === 'user' ? (
+                    <div style={{ whiteSpace: 'pre-wrap' }}>{msg.text}</div>
+                  ) : (
+                    <div
+                      className="artifact-body"
+                      dangerouslySetInnerHTML={{ __html: marked.parse(msg.text || '') }}
+                    />
+                  )}
 
                   <div style={{
                     fontSize: '0.68rem',
                     color: msg.sender === 'user' ? 'rgba(255, 255, 255, 0.7)' : 'var(--text-tertiary)',
                     textAlign: 'right',
-                    marginTop: '6px'
+                    marginTop: '8px'
                   }}>
                     {msg.time}
                   </div>
@@ -352,7 +461,7 @@ export default function FloatingCopilot({
                     width: '28px',
                     height: '28px',
                     borderRadius: '7px',
-                    backgroundColor: 'var(--accent)',
+                    backgroundColor: 'var(--accent-navy)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -375,9 +484,10 @@ export default function FloatingCopilot({
                   backgroundColor: 'var(--accent-subtle)',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  color: 'var(--accent-terracotta)'
                 }}>
-                  <Bot size={15} color="var(--accent)" />
+                  <Bot size={15} />
                 </div>
                 <div style={{
                   backgroundColor: 'var(--bg-surface-elevated)',
@@ -390,8 +500,8 @@ export default function FloatingCopilot({
                   fontSize: '0.8rem',
                   color: 'var(--text-secondary)'
                 }}>
-                  <div className="pulse-indicator" style={{ backgroundColor: 'var(--accent)' }} />
-                  <span>Groq 120B reasoning & subagents collaborating...</span>
+                  <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--accent-terracotta)' }} />
+                  <span>Groq 120B reasoning & authoring response...</span>
                 </div>
               </div>
             )}
@@ -425,8 +535,8 @@ export default function FloatingCopilot({
                   transition: 'all 0.15s ease'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--accent)';
-                  e.currentTarget.style.color = 'var(--text-primary)';
+                  e.currentTarget.style.borderColor = 'var(--accent-terracotta)';
+                  e.currentTarget.style.color = 'var(--accent-terracotta)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.borderColor = 'var(--border-subtle)';
@@ -450,7 +560,7 @@ export default function FloatingCopilot({
             <input
               ref={inputRef}
               type="text"
-              placeholder={attachedContext ? `Ask about ${attachedContext.title}...` : `Ask Diligent about ${activeTab}...`}
+              placeholder={attachedContext ? `Ask about ${attachedContext.title}...` : `Ask about ${activeTab}...`}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               disabled={isWaiting}
@@ -462,23 +572,22 @@ export default function FloatingCopilot({
                 border: '1px solid var(--border-medium)',
                 color: 'var(--text-primary)',
                 fontSize: '0.86rem',
-                outline: 'none',
-                transition: 'border-color 0.15s ease'
+                outline: 'none'
               }}
-              onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+              onFocus={(e) => e.target.style.borderColor = 'var(--accent-terracotta)'}
               onBlur={(e) => e.target.style.borderColor = 'var(--border-medium)'}
             />
             <button
               type="submit"
               disabled={!input.trim() || isWaiting}
-              className="btn-solid-primary"
+              className="btn-terracotta"
               style={{
-                padding: '9px 14px',
+                padding: '9px 16px',
                 borderRadius: '8px',
                 opacity: input.trim() && !isWaiting ? 1 : 0.5
               }}
             >
-              <Send size={15} />
+              <Send size={14} />
             </button>
           </form>
         </div>

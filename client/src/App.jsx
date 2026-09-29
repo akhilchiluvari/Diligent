@@ -1,19 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
+import HeroSection from './components/HeroSection';
 import StatsBar from './components/StatsBar';
+import TeammatesShowcase from './components/TeammatesShowcase';
+import OperatingJourney from './components/OperatingJourney';
 import BoardroomView from './components/BoardroomView';
 import InventoryTerminal from './components/InventoryTerminal';
+import TeamDivisionsView from './components/TeamDivisionsView';
 import MarketingStudio from './components/MarketingStudio';
-import WorkforceView from './components/WorkforceView';
-import AuditLogsView from './components/AuditLogsView';
 import LegalModal from './components/LegalModal';
 import SafeguardModal from './components/SafeguardModal';
+import AuthModal from './components/AuthModal';
 import FloatingCopilot from './components/FloatingCopilot';
-import { Users, Package, Megaphone, Terminal, TrendingUp, Sparkles } from 'lucide-react';
 
 export default function App() {
-  const [theme, setTheme] = useState(() => localStorage.getItem('diligent_theme') || 'dark');
-  const [activeTab, setActiveTab] = useState('boardroom');
+  const [theme, setTheme] = useState(() => localStorage.getItem('diligent_theme') || 'light');
+  const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'teammates' | 'loop' | 'inventory' | 'divisions' | 'marketing'
+  
+  // Auth & Profile state
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem('diligent_user');
+      return saved ? JSON.parse(saved) : {
+        name: 'Akhil Chiluvari',
+        email: 'akhil@diligent.ai',
+        businessName: 'Sri Balaji Smart Retail & Tech Mart',
+        location: 'Madhapur, Hyderabad'
+      };
+    } catch (e) {
+      return null;
+    }
+  });
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+
+  // Store data state
   const [stats, setStats] = useState(null);
   const [business, setBusiness] = useState(null);
   const [products, setProducts] = useState([]);
@@ -25,9 +45,8 @@ export default function App() {
   const [legalData, setLegalData] = useState(null);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [isLegalModalOpen, setIsLegalModalOpen] = useState(false);
-  const [activeProvider, setActiveProvider] = useState(null);
 
-  // Agent Swarm states
+  // Consensus & Marketing state
   const [consensusData, setConsensusData] = useState(null);
   const [isConsensusRunning, setIsConsensusRunning] = useState(false);
   const [campaignData, setCampaignData] = useState(null);
@@ -39,7 +58,7 @@ export default function App() {
   const [chatMessages, setChatMessages] = useState([
     {
       sender: 'bot',
-      text: "Namaste! I am Diligent, your Autonomous Business Consultant powered by Groq 120B. I monitor your live POS barcodes, stock turnover, and associate productivity. How can I help you scale today?",
+      text: "### 👋 Namaste!\n\nI am **Diligent**, your Autonomous Business Consultant powered by **Groq 120B**.\n\nI am connected to your live POS barcode scans, inventory velocity, and team division rosters. How can I help you scale today?",
       time: 'Just now'
     }
   ]);
@@ -49,7 +68,7 @@ export default function App() {
   const [selectedSafeguardAction, setSelectedSafeguardAction] = useState(null);
   const [isSafeguardOpen, setIsSafeguardOpen] = useState(false);
 
-  // Theme synchronization
+  // Theme Sync
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('diligent_theme', theme);
@@ -59,7 +78,18 @@ export default function App() {
     setTheme(prev => prev === 'dark' ? 'light' : 'dark');
   };
 
-  // Open Copilot with context from any item or tab
+  const handleAuthSuccess = (user) => {
+    setCurrentUser(user);
+    localStorage.setItem('diligent_user', JSON.stringify(user));
+    refreshAllData();
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    localStorage.removeItem('diligent_user');
+  };
+
+  // Open Copilot with context
   const handleOpenCopilotWithContext = (contextObj) => {
     setAttachedContext(contextObj);
     setIsCopilotOpen(true);
@@ -77,9 +107,6 @@ export default function App() {
       if (statsJson.success) {
         setStats(statsJson.stats);
         setTermsAccepted(statsJson.stats.termsAccepted);
-        if (!statsJson.stats.termsAccepted) {
-          setIsLegalModalOpen(true);
-        }
       }
 
       const prodRes = await fetch('/api/products');
@@ -99,15 +126,11 @@ export default function App() {
       const logsJson = await logsRes.json();
       if (logsJson.success) setLogs(logsJson.logs);
 
-      const agentRes = await fetch('/api/agents/status');
-      const agentJson = await agentRes.json();
-      if (agentJson.success) setActiveProvider(agentJson.activeProvider);
-
       const legalRes = await fetch('/api/legal/terms');
       const legalJson = await legalRes.json();
       if (legalJson.success) setLegalData(legalJson.legal);
     } catch (err) {
-      console.error('Failed fetching data:', err);
+      console.error('Data fetch error:', err);
     }
   };
 
@@ -115,7 +138,7 @@ export default function App() {
     refreshAllData();
   }, []);
 
-  // Swarm Consensus
+  // Consensus session
   const handleTriggerConsensus = async () => {
     setIsConsensusRunning(true);
     try {
@@ -142,7 +165,7 @@ export default function App() {
     }
   }, []);
 
-  // Scan Sale
+  // POS Sale recording
   const handleScanSale = async (payload) => {
     const res = await fetch('/api/sales/checkout', {
       method: 'POST',
@@ -156,7 +179,7 @@ export default function App() {
     return data;
   };
 
-  // Marketing Campaign Generation
+  // Marketing generation
   const handleGenerateCampaign = async ({ focusType, targetSku }) => {
     setIsGeneratingCampaign(true);
     try {
@@ -176,8 +199,8 @@ export default function App() {
     }
   };
 
-  // Copilot message sending
-  const handleSendMessage = async (queryText) => {
+  // Copilot query handling with multilingual support
+  const handleSendMessage = async (queryText, { language = 'en' } = {}) => {
     const userMsg = {
       sender: 'user',
       text: queryText,
@@ -190,7 +213,7 @@ export default function App() {
       const res = await fetch('/api/agents/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: queryText })
+        body: JSON.stringify({ query: queryText, language })
       });
       const data = await res.json();
       if (data.success) {
@@ -206,7 +229,7 @@ export default function App() {
     } catch (err) {
       setChatMessages(prev => [...prev, {
         sender: 'bot',
-        text: `Error connecting to supervisor: ${err.message}`,
+        text: `### ⚠️ Connection Notice\n\nCould not reach supervisor agent: ${err.message}`,
         time: 'Just now'
       }]);
     } finally {
@@ -214,7 +237,7 @@ export default function App() {
     }
   };
 
-  // Accept Terms
+  // Legal waiver acceptance
   const handleAcceptTerms = async () => {
     const res = await fetch('/api/legal/accept', { method: 'POST' });
     const data = await res.json();
@@ -224,7 +247,7 @@ export default function App() {
     }
   };
 
-  // Safeguard confirmation
+  // Safeguard action execution
   const handleOpenSafeguard = (actionItem) => {
     setSelectedSafeguardAction(actionItem);
     setIsSafeguardOpen(true);
@@ -246,86 +269,81 @@ export default function App() {
     }
   };
 
-  const navigationTabs = [
-    { id: 'boardroom', label: 'Virtual Boardroom', icon: TrendingUp },
-    { id: 'inventory', label: 'Inventory & POS', icon: Package },
-    { id: 'marketing', label: 'AI Marketing', icon: Megaphone },
-    { id: 'workforce', label: 'Workforce CRM', icon: Users },
-    { id: 'telemetry', label: 'Live Logs', icon: Terminal }
-  ];
-
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* Top Navbar */}
+      {/* Dark Navy Pill Navigation Header (Exact Reference Match: Image 1) */}
       <Navbar
-        business={{ name: stats?.businessName }}
+        business={{ name: currentUser?.businessName || stats?.businessName }}
         termsAccepted={termsAccepted}
         onOpenLegal={() => setIsLegalModalOpen(true)}
-        activeProvider={activeProvider}
         theme={theme}
         onToggleTheme={toggleTheme}
         onOpenCopilot={() => setIsCopilotOpen(true)}
+        currentUser={currentUser}
+        onOpenAuth={() => setIsAuthModalOpen(true)}
+        onLogout={handleLogout}
+        activeTab={activeTab}
+        onSelectTab={(tab) => setActiveTab(tab)}
       />
 
-      <main style={{ maxWidth: '1440px', margin: '0 auto', padding: '0 24px 60px 24px', width: '100%', flex: 1 }}>
-        {/* KPI Metrics */}
-        <StatsBar
-          stats={stats}
-          onNavigateToMarketing={() => setActiveTab('marketing')}
-          onNavigateToInventory={() => setActiveTab('inventory')}
-          onOpenCopilotWithContext={handleOpenCopilotWithContext}
-        />
+      <main style={{ maxWidth: '1240px', margin: '0 auto', padding: '0 20px 80px 20px', width: '100%', flex: 1 }}>
+        {/* VIEW: OVERVIEW (Hero + Key Metrics + Teammates + Journey Loop + Boardroom) */}
+        {activeTab === 'overview' && (
+          <>
+            <HeroSection
+              onOpenCopilot={() => setIsCopilotOpen(true)}
+              onNavigateToLoop={() => setActiveTab('loop')}
+              onTriggerConsensus={handleTriggerConsensus}
+              stats={stats}
+            />
 
-        {/* Tab Navigation */}
-        <div style={{
-          display: 'flex',
-          gap: '6px',
-          borderBottom: '1px solid var(--border-subtle)',
-          paddingBottom: '12px',
-          marginBottom: '24px',
-          overflowX: 'auto',
-          whiteSpace: 'nowrap'
-        }}>
-          {navigationTabs.map(tab => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '7px',
-                  padding: '7px 16px',
-                  borderRadius: '7px',
-                  border: isActive ? '1px solid var(--accent)' : '1px solid transparent',
-                  backgroundColor: isActive ? 'var(--accent-subtle)' : 'transparent',
-                  color: isActive ? 'var(--accent-light)' : 'var(--text-secondary)',
-                  fontWeight: 600,
-                  fontSize: '0.84rem',
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease'
-                }}
-              >
-                <Icon size={15} />
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
-        </div>
+            <StatsBar
+              stats={stats}
+              onNavigateToMarketing={() => setActiveTab('marketing')}
+              onNavigateToInventory={() => setActiveTab('inventory')}
+              onOpenCopilotWithContext={handleOpenCopilotWithContext}
+            />
 
-        {/* Active Tab Views */}
-        {activeTab === 'boardroom' && (
-          <BoardroomView
-            consensusData={consensusData}
-            onTriggerConsensus={handleTriggerConsensus}
-            isRunning={isConsensusRunning}
-            onExecuteAction={handleOpenSafeguard}
+            {/* Seven Teammates Showcase (Exact Match: Image 3) */}
+            <TeammatesShowcase
+              onOpenCopilotWithContext={handleOpenCopilotWithContext}
+              stats={stats}
+            />
+
+            {/* Operating Journey (Exact Match: Image 2) */}
+            <OperatingJourney
+              onOpenCopilotWithContext={handleOpenCopilotWithContext}
+              onTriggerConsensus={handleTriggerConsensus}
+            />
+
+            {/* Virtual Boardroom Consensus Directive */}
+            <BoardroomView
+              consensusData={consensusData}
+              onTriggerConsensus={handleTriggerConsensus}
+              isRunning={isConsensusRunning}
+              onExecuteAction={handleOpenSafeguard}
+              onOpenCopilotWithContext={handleOpenCopilotWithContext}
+            />
+          </>
+        )}
+
+        {/* VIEW: TEAMMATES */}
+        {activeTab === 'teammates' && (
+          <TeammatesShowcase
             onOpenCopilotWithContext={handleOpenCopilotWithContext}
+            stats={stats}
           />
         )}
 
+        {/* VIEW: OPERATING LOOP */}
+        {activeTab === 'loop' && (
+          <OperatingJourney
+            onOpenCopilotWithContext={handleOpenCopilotWithContext}
+            onTriggerConsensus={handleTriggerConsensus}
+          />
+        )}
+
+        {/* VIEW: INVENTORY & POS BARCODE */}
         {activeTab === 'inventory' && (
           <InventoryTerminal
             products={products}
@@ -338,6 +356,15 @@ export default function App() {
           />
         )}
 
+        {/* VIEW: TEAM DIVISIONS & COORDINATION PROTOCOLS */}
+        {activeTab === 'divisions' && (
+          <TeamDivisionsView
+            employees={employees}
+            onOpenCopilotWithContext={handleOpenCopilotWithContext}
+          />
+        )}
+
+        {/* VIEW: MARKETING CMS */}
         {activeTab === 'marketing' && (
           <MarketingStudio
             campaignData={campaignData || consensusData?.marketingReport}
@@ -347,20 +374,9 @@ export default function App() {
             onOpenCopilotWithContext={handleOpenCopilotWithContext}
           />
         )}
-
-        {activeTab === 'workforce' && (
-          <WorkforceView
-            employees={employees}
-            onOpenCopilotWithContext={handleOpenCopilotWithContext}
-          />
-        )}
-
-        {activeTab === 'telemetry' && (
-          <AuditLogsView logs={logs} />
-        )}
       </main>
 
-      {/* Flagship Floating Contextual Copilot (Bottom Right) */}
+      {/* Floating Contextual Copilot Drawer (Bottom Right - Flagship Feature) */}
       <FloatingCopilot
         isOpen={isCopilotOpen}
         onToggle={() => setIsCopilotOpen(!isCopilotOpen)}
@@ -374,25 +390,35 @@ export default function App() {
         onExecuteAction={handleOpenSafeguard}
       />
 
-      {/* Footer */}
+      {/* Clean Minimalist Footer */}
       <footer style={{
         borderTop: '1px solid var(--border-subtle)',
-        padding: '16px 24px',
+        padding: '24px 20px',
         color: 'var(--text-tertiary)',
-        fontSize: '0.78rem',
+        fontSize: '0.82rem',
         backgroundColor: 'var(--bg-surface)'
       }}>
-        <div style={{ maxWidth: '1440px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-          <div>
-            <strong>Diligent</strong> • Multi-Agent Operational Engine for SMBs • Microsoft Hack with Hyderabad 3.0
+        <div style={{ maxWidth: '1240px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span className="font-serif-headline" style={{ fontWeight: 700, fontSize: '1.05rem', color: 'var(--text-primary)' }}>
+              Diligent.
+            </span>
+            <span>• Autonomous Multi-Agent Operational Engine for SMB Scaling</span>
           </div>
           <div>
-            Powered by Groq 120B Parameter LPU Architecture
+            Powered by Groq 120B Parameter LPU Architecture • Hack with Hyderabad 3.0 at Microsoft IDC
           </div>
         </div>
       </footer>
 
-      {/* Modals */}
+      {/* Authentication & Business Registration Modal */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onAuthSuccess={handleAuthSuccess}
+      />
+
+      {/* Legal & Liability Gateway Modal */}
       <LegalModal
         isOpen={isLegalModalOpen}
         onClose={() => setIsLegalModalOpen(false)}
@@ -401,6 +427,7 @@ export default function App() {
         legalData={legalData}
       />
 
+      {/* Human-in-the-Loop Safeguard Action Execution Modal */}
       <SafeguardModal
         isOpen={isSafeguardOpen}
         onClose={() => setIsSafeguardOpen(false)}

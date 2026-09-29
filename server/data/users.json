@@ -1,0 +1,13 @@
+[
+  {
+    "id": "usr_001",
+    "email": "akhil@diligent.ai",
+    "password": "password123",
+    "name": "Akhil Chiluvari",
+    "businessName": "Sri Balaji Smart Retail & Tech Mart",
+    "category": "Hybrid Supermart & Consumer Electronics",
+    "location": "Madhapur, HITEC City, Hyderabad",
+    "revenueTier": "₹15L - ₹35L / month",
+    "createdAt": "2026-09-29T20:00:00Z"
+  }
+]
