@@ -1,0 +1,438 @@
+{
+  "business": {
+    "id": "biz_hyd_001",
+    "name": "Sri Balaji Smart Retail & Tech Mart",
+    "owner": "Akhil Chiluvari & Partners",
+    "location": "Madhapur, HITEC City, Hyderabad, Telangana",
+    "category": "Hybrid Supermart & Consumer Electronics",
+    "gstin": "36AABCS1429B1Z8",
+    "currency": "INR",
+    "currencySymbol": "₹",
+    "termsAccepted": false,
+    "termsAcceptedAt": null,
+    "lastAudit": "2026-09-29T20:45:00Z"
+  },
+  "products": [
+    {
+      "id": "prod_001",
+      "barcode": "8901030825010",
+      "sku": "ELEC-BOAT-255",
+      "name": "boAt Rockerz 255 Pro+ Wireless Earphones",
+      "category": "Electronics & Accessories",
+      "costPrice": 850,
+      "sellingPrice": 1499,
+      "stockQuantity": 42,
+      "minThreshold": 15,
+      "unitsSoldThisMonth": 184,
+      "unitsSoldLastMonth": 142,
+      "shelfLocation": "Aisle 3 - Bay B",
+      "supplier": "Imagine Marketing Tech Hub",
+      "status": "High Velocity (Top Seller)",
+      "isTopSeller": true
+    },
+    {
+      "id": "prod_002",
+      "barcode": "8901233024018",
+      "sku": "FMCG-AMUL-500",
+      "name": "Amul Pasteurised Butter 500g",
+      "category": "Dairy & Cold Storage",
+      "costPrice": 245,
+      "sellingPrice": 285,
+      "stockQuantity": 8,
+      "minThreshold": 20,
+      "unitsSoldThisMonth": 312,
+      "unitsSoldLastMonth": 290,
+      "shelfLocation": "Cooler Rack 1",
+      "supplier": "Gujarat Co-op Milk Marketing Fed",
+      "status": "Critical Low Stock Alert",
+      "isTopSeller": true
+    },
+    {
+      "id": "prod_003",
+      "barcode": "8901725181222",
+      "sku": "GROC-TATA-DAL",
+      "name": "Tata Sampann Organic Moong Dal 1kg",
+      "category": "Staples & Groceries",
+      "costPrice": 148,
+      "sellingPrice": 195,
+      "stockQuantity": 65,
+      "minThreshold": 25,
+      "unitsSoldThisMonth": 226,
+      "unitsSoldLastMonth": 210,
+      "shelfLocation": "Aisle 1 - Bay C",
+      "supplier": "Tata Consumer Products Depot",
+      "status": "Healthy Velocity",
+      "isTopSeller": true
+    },
+    {
+      "id": "prod_004",
+      "barcode": "8901207038112",
+      "sku": "FMCG-CAD-SILK",
+      "name": "Cadbury Dairy Milk Silk Chocolate 150g",
+      "category": "Confectionery & Impulse",
+      "costPrice": 130,
+      "sellingPrice": 180,
+      "stockQuantity": 54,
+      "minThreshold": 20,
+      "unitsSoldThisMonth": 195,
+      "unitsSoldLastMonth": 180,
+      "shelfLocation": "Checkout Counter 1",
+      "supplier": "Mondelez India Regional Wholesaler",
+      "status": "Healthy Velocity",
+      "isTopSeller": true
+    },
+    {
+      "id": "prod_005",
+      "barcode": "8906059281014",
+      "sku": "FMCG-BEV-CRAN",
+      "name": "Real Fruit Power Cranberry Juice 1L",
+      "category": "Beverages & Juices",
+      "costPrice": 105,
+      "sellingPrice": 145,
+      "stockQuantity": 38,
+      "minThreshold": 15,
+      "unitsSoldThisMonth": 140,
+      "unitsSoldLastMonth": 125,
+      "shelfLocation": "Aisle 2 - Bay A",
+      "supplier": "Dabur India Distribution",
+      "status": "Healthy Velocity",
+      "isTopSeller": true
+    },
+    {
+      "id": "prod_006",
+      "barcode": "8904123890123",
+      "sku": "ELEC-LAMP-QI",
+      "name": "Nordic Smart LED Desk Lamp with 15W Qi Charger",
+      "category": "Electronics & Smart Home",
+      "costPrice": 1450,
+      "sellingPrice": 2499,
+      "stockQuantity": 48,
+      "minThreshold": 10,
+      "unitsSoldThisMonth": 3,
+      "unitsSoldLastMonth": 5,
+      "shelfLocation": "Aisle 4 - Shelf D",
+      "supplier": "Shenzhen Lumen Innovations",
+      "status": "Dead Stock / Stagnant Inventory",
+      "isLeastSeller": true
+    },
+    {
+      "id": "prod_007",
+      "barcode": "8907812903411",
+      "sku": "ORG-CHIA-500",
+      "name": "Himalayan Organic Raw Chia Seeds 500g",
+      "category": "Health & Gourmet Organics",
+      "costPrice": 360,
+      "sellingPrice": 599,
+      "stockQuantity": 52,
+      "minThreshold": 10,
+      "unitsSoldThisMonth": 4,
+      "unitsSoldLastMonth": 6,
+      "shelfLocation": "Aisle 1 - Top Shelf",
+      "supplier": "Pure Organic Organics Ltd",
+      "status": "High Margin / Poor Awareness",
+      "isLeastSeller": true
+    },
+    {
+      "id": "prod_008",
+      "barcode": "8905623910023",
+      "sku": "HOME-COPPER-JUG",
+      "name": "Handcrafted Pure Copper Water Dispenser Jug 2L",
+      "category": "Kitchenware & Wellness",
+      "costPrice": 890,
+      "sellingPrice": 1550,
+      "stockQuantity": 34,
+      "minThreshold": 8,
+      "unitsSoldThisMonth": 2,
+      "unitsSoldLastMonth": 3,
+      "shelfLocation": "Aisle 5 - Display Table",
+      "supplier": "Moradabad Artisans Guild",
+      "status": "Slow Turnover / Capital Locked",
+      "isLeastSeller": true
+    },
+    {
+      "id": "prod_009",
+      "barcode": "8908812390199",
+      "sku": "ELEC-SPK-RUGGED",
+      "name": "SoundWave Rugged Waterproof Bluetooth Speaker",
+      "category": "Electronics & Audio",
+      "costPrice": 920,
+      "sellingPrice": 1699,
+      "stockQuantity": 29,
+      "minThreshold": 8,
+      "unitsSoldThisMonth": 5,
+      "unitsSoldLastMonth": 7,
+      "shelfLocation": "Aisle 3 - Bay C",
+      "supplier": "Acoustic Trendz Pvt Ltd",
+      "status": "Stagnant",
+      "isLeastSeller": true
+    },
+    {
+      "id": "prod_010",
+      "barcode": "8901262010058",
+      "sku": "GROC-BASMATI-5K",
+      "name": "India Gate Classic Basmati Rice 5kg",
+      "category": "Staples & Groceries",
+      "costPrice": 620,
+      "sellingPrice": 799,
+      "stockQuantity": 28,
+      "minThreshold": 12,
+      "unitsSoldThisMonth": 118,
+      "unitsSoldLastMonth": 104,
+      "shelfLocation": "Aisle 1 - Pallet Base",
+      "supplier": "KRBL Rice Mills Terminal",
+      "status": "Steady Demand",
+      "isTopSeller": false
+    }
+  ],
+  "inboundStocks": [
+    {
+      "inboundId": "PO-2026-0891",
+      "supplier": "Imagine Marketing Tech Hub",
+      "receivedDate": "2026-09-28T14:30:00Z",
+      "items": [
+        { "sku": "ELEC-BOAT-255", "quantity": 50, "unitCost": 850, "total": 42500 }
+      ],
+      "totalCost": 42500,
+      "status": "Received & Verified",
+      "receivedBy": "EMP-003",
+      "invoiceNumber": "INV-IMAGINE-8821"
+    },
+    {
+      "inboundId": "PO-2026-0888",
+      "supplier": "Gujarat Co-op Milk Marketing Fed",
+      "receivedDate": "2026-09-27T08:15:00Z",
+      "items": [
+        { "sku": "FMCG-AMUL-500", "quantity": 100, "unitCost": 245, "total": 24500 }
+      ],
+      "totalCost": 24500,
+      "status": "Received & Verified",
+      "receivedBy": "EMP-002",
+      "invoiceNumber": "INV-GCMMF-30219"
+    },
+    {
+      "inboundId": "PO-2026-0880",
+      "supplier": "Tata Consumer Products Depot",
+      "receivedDate": "2026-09-25T11:00:00Z",
+      "items": [
+        { "sku": "GROC-TATA-DAL", "quantity": 80, "unitCost": 148, "total": 11840 }
+      ],
+      "totalCost": 11840,
+      "status": "Received & Verified",
+      "receivedBy": "EMP-001",
+      "invoiceNumber": "INV-TATA-99120"
+    }
+  ],
+  "sales": [
+    {
+      "transactionId": "TXN-20260929-1001",
+      "timestamp": "2026-09-29T18:42:10Z",
+      "customerId": "CUST-001",
+      "customerName": "Suresh Reddy",
+      "employeeId": "EMP-001",
+      "employeeName": "Pooja Sharma",
+      "items": [
+        { "sku": "ELEC-BOAT-255", "name": "boAt Rockerz 255 Pro+", "qty": 1, "price": 1499 },
+        { "sku": "FMCG-CAD-SILK", "name": "Cadbury Dairy Milk Silk 150g", "qty": 2, "price": 180 }
+      ],
+      "subtotal": 1859,
+      "gstAmount": 266,
+      "grandTotal": 1859,
+      "paymentMethod": "UPI (Google Pay)",
+      "channel": "In-Store POS"
+    },
+    {
+      "transactionId": "TXN-20260929-1002",
+      "timestamp": "2026-09-29T19:15:33Z",
+      "customerId": "CUST-002",
+      "customerName": "Ananya Rao",
+      "employeeId": "EMP-002",
+      "employeeName": "Kiran Kumar",
+      "items": [
+        { "sku": "GROC-TATA-DAL", "name": "Tata Sampann Organic Moong Dal 1kg", "qty": 2, "price": 195 },
+        { "sku": "GROC-BASMATI-5K", "name": "India Gate Classic Basmati Rice 5kg", "qty": 1, "price": 799 },
+        { "sku": "FMCG-AMUL-500", "name": "Amul Butter 500g", "qty": 1, "price": 285 }
+      ],
+      "subtotal": 1474,
+      "gstAmount": 73,
+      "grandTotal": 1474,
+      "paymentMethod": "UPI (PhonePe)",
+      "channel": "In-Store POS"
+    },
+    {
+      "transactionId": "TXN-20260929-1003",
+      "timestamp": "2026-09-29T19:50:20Z",
+      "customerId": "CUST-003",
+      "customerName": "Vikram Verma",
+      "employeeId": "EMP-001",
+      "employeeName": "Pooja Sharma",
+      "items": [
+        { "sku": "ELEC-BOAT-255", "name": "boAt Rockerz 255 Pro+", "qty": 1, "price": 1499 },
+        { "sku": "FMCG-BEV-CRAN", "name": "Real Fruit Cranberry Juice 1L", "qty": 2, "price": 145 }
+      ],
+      "subtotal": 1789,
+      "gstAmount": 225,
+      "grandTotal": 1789,
+      "paymentMethod": "Credit Card",
+      "channel": "In-Store POS"
+    },
+    {
+      "transactionId": "TXN-20260929-1004",
+      "timestamp": "2026-09-29T20:10:05Z",
+      "customerId": "CUST-004",
+      "customerName": "Meera Joshi",
+      "employeeId": "EMP-003",
+      "employeeName": "Rahul Varma",
+      "items": [
+        { "sku": "FMCG-CAD-SILK", "name": "Cadbury Dairy Milk Silk 150g", "qty": 3, "price": 180 },
+        { "sku": "FMCG-BEV-CRAN", "name": "Real Fruit Cranberry Juice 1L", "qty": 1, "price": 145 }
+      ],
+      "subtotal": 685,
+      "gstAmount": 95,
+      "grandTotal": 685,
+      "paymentMethod": "Cash",
+      "channel": "In-Store POS"
+    }
+  ],
+  "employees": [
+    {
+      "id": "EMP-001",
+      "name": "Pooja Sharma",
+      "role": "Senior POS Cashier & Client Lead",
+      "shift": "Morning & Afternoon (08:00 - 16:30)",
+      "monthlySalary": 28000,
+      "salesGeneratedThisMonth": 248500,
+      "transactionsCount": 265,
+      "avgBasketValue": 937,
+      "efficiencyScore": 96,
+      "attendanceRate": "98%",
+      "upsellSuccessRate": "24%",
+      "status": "Top Performer"
+    },
+    {
+      "id": "EMP-002",
+      "name": "Kiran Kumar",
+      "role": "Inventory & Billing Associate",
+      "shift": "Evening & Night (14:00 - 22:30)",
+      "monthlySalary": 24000,
+      "salesGeneratedThisMonth": 192300,
+      "transactionsCount": 210,
+      "avgBasketValue": 915,
+      "efficiencyScore": 91,
+      "attendanceRate": "95%",
+      "upsellSuccessRate": "16%",
+      "status": "Consistent"
+    },
+    {
+      "id": "EMP-003",
+      "name": "Rahul Varma",
+      "role": "Electronics Floor Specialist",
+      "shift": "General Shift (11:00 - 19:30)",
+      "monthlySalary": 26000,
+      "salesGeneratedThisMonth": 164200,
+      "transactionsCount": 115,
+      "avgBasketValue": 1427,
+      "efficiencyScore": 88,
+      "attendanceRate": "92%",
+      "upsellSuccessRate": "31%",
+      "status": "High Margin Focus"
+    },
+    {
+      "id": "EMP-004",
+      "name": "Sunita Devi",
+      "role": "Stock Inward & Quality Officer",
+      "shift": "Morning Shift (07:00 - 15:30)",
+      "monthlySalary": 22000,
+      "salesGeneratedThisMonth": 0,
+      "transactionsCount": 0,
+      "avgBasketValue": 0,
+      "efficiencyScore": 94,
+      "attendanceRate": "99%",
+      "upsellSuccessRate": "N/A",
+      "status": "Back-office Hero"
+    }
+  ],
+  "customers": [
+    {
+      "id": "CUST-001",
+      "name": "Suresh Reddy",
+      "phone": "+91 98490 12831",
+      "email": "suresh.reddy@techhyd.com",
+      "tier": "Gold Elite",
+      "totalSpent": 34800,
+      "visitCount": 22,
+      "topCategory": "Electronics & Accessories",
+      "lastVisit": "2026-09-29T18:42:10Z",
+      "churnRisk": "Low (0.05)"
+    },
+    {
+      "id": "CUST-002",
+      "name": "Ananya Rao",
+      "phone": "+91 97011 44520",
+      "email": "ananya.rao@gmail.com",
+      "tier": "Platinum Club",
+      "totalSpent": 58900,
+      "visitCount": 38,
+      "topCategory": "Staples & Organic Groceries",
+      "lastVisit": "2026-09-29T19:15:33Z",
+      "churnRisk": "Very Low (0.02)"
+    },
+    {
+      "id": "CUST-003",
+      "name": "Vikram Verma",
+      "phone": "+91 99892 78310",
+      "email": "vikram.verma@corp.in",
+      "tier": "Silver Member",
+      "totalSpent": 14200,
+      "visitCount": 9,
+      "topCategory": "Electronics & Audio",
+      "lastVisit": "2026-09-29T19:50:20Z",
+      "churnRisk": "Medium (0.28)"
+    },
+    {
+      "id": "CUST-004",
+      "name": "Meera Joshi",
+      "phone": "+91 91210 99401",
+      "email": "meera.j@outlook.com",
+      "tier": "Regular",
+      "totalSpent": 6800,
+      "visitCount": 5,
+      "topCategory": "Confectionery & Beverages",
+      "lastVisit": "2026-09-29T20:10:05Z",
+      "churnRisk": "High (0.64)"
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": "LOG-101",
+      "timestamp": "2026-09-29T20:10:05Z",
+      "type": "SALE_REGISTERED",
+      "agent": "Billing & Inventory Agent",
+      "detail": "Processed Sale TXN-20260929-1004 for ₹685. In-store POS barcode scan verified.",
+      "severity": "INFO"
+    },
+    {
+      "id": "LOG-102",
+      "timestamp": "2026-09-29T20:00:00Z",
+      "type": "STOCK_ALERT",
+      "agent": "Billing & Inventory Agent",
+      "detail": "SKU FMCG-AMUL-500 (Amul Butter 500g) dropped to 8 units. Below threshold of 20. Reorder dispatch recommended.",
+      "severity": "WARNING"
+    },
+    {
+      "id": "LOG-103",
+      "timestamp": "2026-09-29T19:30:00Z",
+      "type": "DEAD_STOCK_ANALYSIS",
+      "agent": "Strategy & Scaling Agent",
+      "detail": "Identified 4 stagnant high-margin items: Nordic Lamp, Chia Seeds, Copper Jug, SoundWave Speaker. ₹1,48,200 capital locked.",
+      "severity": "ACTION_REQUIRED"
+    },
+    {
+      "id": "LOG-104",
+      "timestamp": "2026-09-29T18:45:00Z",
+      "type": "MARKETING_SYNC",
+      "agent": "Web & Marketing Agent",
+      "detail": "Autonomously drafted 'Dussehra Mega Tech & Kitchen Bonanza' bundle campaign targeting Dead Stock SKU clearance.",
+      "severity": "INFO"
+    }
+  ]
+}
