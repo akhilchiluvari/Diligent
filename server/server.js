@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dbService } from './services/dbService.js';
@@ -163,6 +164,16 @@ app.get('/api/logs', (req, res) => {
 // If production build exists in client/dist, serve it statically
 const clientDist = path.join(__dirname, '../client/dist');
 app.use(express.static(clientDist));
+
+app.use((req, res, next) => {
+  if (req.method === 'GET' && !req.path.startsWith('/api')) {
+    const indexPath = path.join(clientDist, 'index.html');
+    if (fs.existsSync(indexPath)) {
+      return res.sendFile(indexPath);
+    }
+  }
+  next();
+});
 
 // Export app for testability, start if direct
 if (process.env.NODE_ENV !== 'test') {
