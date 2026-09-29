@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Barcode, Scan, PlusCircle, AlertCircle, CheckCircle, PackageCheck, ArrowDownCircle, ArrowUpCircle } from 'lucide-react';
+import { Barcode, Scan, PlusCircle, AlertCircle, CheckCircle, Sparkles, Filter, Package } from 'lucide-react';
 
-export default function InventoryTerminal({ products, topSellers, leastSellers, lowStock, onScanSale, employees }) {
+export default function InventoryTerminal({ products, topSellers, leastSellers, lowStock, onScanSale, employees, onOpenCopilotWithContext }) {
   const [barcodeInput, setBarcodeInput] = useState('');
   const [selectedQty, setSelectedQty] = useState(1);
   const [selectedEmployee, setSelectedEmployee] = useState(employees[0]?.id || 'EMP-001');
@@ -23,7 +23,7 @@ export default function InventoryTerminal({ products, topSellers, leastSellers, 
       if (result.success) {
         setScanMessage({
           type: 'success',
-          text: `Scanned & Billed: ${result.transaction.items[0]?.name} (Qty: ${result.transaction.items[0]?.qty}) for ₹${result.transaction.grandTotal.toLocaleString('en-IN')}`
+          text: `Billed: ${result.transaction.items[0]?.name} (Qty: ${result.transaction.items[0]?.qty}) for ₹${result.transaction.grandTotal.toLocaleString('en-IN')}`
         });
         setBarcodeInput('');
       } else {
@@ -33,15 +33,15 @@ export default function InventoryTerminal({ products, topSellers, leastSellers, 
       setScanMessage({ type: 'error', text: err.message });
     }
 
-    setTimeout(() => setScanMessage(null), 6000);
+    setTimeout(() => setScanMessage(null), 5000);
   };
 
   const quickPresets = [
-    { label: "boAt Rockerz 255", barcode: "8901030825010", type: "Top Seller" },
-    { label: "Amul Butter 500g", barcode: "8901233024018", type: "Low Stock Alert" },
-    { label: "Tata Moong Dal", barcode: "8901725181222", type: "Top Seller" },
-    { label: "Nordic LED Lamp", barcode: "8904123890123", type: "Dead Stock" },
-    { label: "Himalayan Chia", barcode: "8907812903411", type: "Dead Stock" }
+    { label: "boAt Rockerz 255", barcode: "8901030825010" },
+    { label: "Amul Butter 500g", barcode: "8901233024018" },
+    { label: "Tata Moong Dal", barcode: "8901725181222" },
+    { label: "Nordic LED Lamp", barcode: "8904123890123" },
+    { label: "Himalayan Chia", barcode: "8907812903411" }
   ];
 
   const displayedProducts = activeTab === 'top' 
@@ -53,51 +53,61 @@ export default function InventoryTerminal({ products, topSellers, leastSellers, 
     : products;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      {/* Real-time Barcode Scanner Ingestion Terminal */}
-      <div className="glass-panel" style={{
-        padding: '24px',
-        border: '1px solid rgba(56, 189, 248, 0.3)',
-        background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(18, 30, 52, 0.9) 100%)'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      {/* Top POS Ingestion Card */}
+      <div className="card-surface" style={{ padding: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', flexWrap: 'wrap', gap: '10px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{
-              width: '36px',
-              height: '36px',
+              width: '32px',
+              height: '32px',
               borderRadius: '8px',
-              backgroundColor: 'rgba(56, 189, 248, 0.15)',
+              backgroundColor: 'var(--badge-blue-bg)',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              color: 'var(--badge-blue-text)'
             }}>
-              <Scan size={20} color="#38bdf8" />
+              <Scan size={18} />
             </div>
             <div>
-              <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#ffffff' }}>
-                Edge POS & Barcode Scanner Simulator
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                Real-Time Barcode Scanner Ingestion
               </h3>
-              <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-                Simulates real-time hardware barcode scanner ingestion (serial-to-web API). Telemetry updates stock instantly.
+              <p style={{ fontSize: '0.74rem', color: 'var(--text-secondary)' }}>
+                Edge serial-to-web ingestion simulator. Automatically decrements inventory and triggers replenishment alerts.
               </p>
             </div>
           </div>
-          <span className="badge-blue">
-            <Barcode size={14} /> Hardware Link: Emulated Active
-          </span>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span className="badge-clean badge-clean-blue">
+              <Barcode size={12} /> Scanner Active
+            </span>
+            <button
+              onClick={() => onOpenCopilotWithContext({
+                type: 'INVENTORY_AUDIT',
+                title: 'Live Catalog Health Audit',
+                details: `Analyzing all ${products?.length || 0} products. Low stock count: ${lowStock?.length}. Dead stock count: ${leastSellers?.length}.`
+              })}
+              className="btn-agent-trigger"
+            >
+              <Sparkles size={12} /> Ask Agent to Audit Stock
+            </button>
+          </div>
         </div>
 
         {/* Scan Input Form */}
         <form onSubmit={handleScanSubmit} style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-          gap: '12px',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))',
+          gap: '10px',
           alignItems: 'flex-end',
-          marginBottom: '16px'
+          marginBottom: '14px'
         }}>
           <div>
-            <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '6px' }}>
-              Barcode / SKU
+            <label style={{ display: 'block', fontSize: '0.72rem', color: 'var(--text-tertiary)', marginBottom: '5px', fontWeight: 600 }}>
+              BARCODE / SKU
             </label>
             <input
               type="text"
@@ -106,20 +116,21 @@ export default function InventoryTerminal({ products, topSellers, leastSellers, 
               onChange={(e) => setBarcodeInput(e.target.value)}
               style={{
                 width: '100%',
-                padding: '10px 14px',
-                borderRadius: '8px',
-                backgroundColor: 'rgba(0, 0, 0, 0.4)',
-                border: '1px solid var(--border-color)',
-                color: '#ffffff',
-                fontSize: '0.9rem',
-                fontFamily: 'monospace'
+                padding: '8px 12px',
+                borderRadius: '7px',
+                backgroundColor: 'var(--bg-input)',
+                border: '1px solid var(--border-medium)',
+                color: 'var(--text-primary)',
+                fontSize: '0.85rem',
+                fontFamily: 'monospace',
+                outline: 'none'
               }}
             />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '6px' }}>
-              Quantity
+            <label style={{ display: 'block', fontSize: '0.72rem', color: 'var(--text-tertiary)', marginBottom: '5px', fontWeight: 600 }}>
+              QTY
             </label>
             <input
               type="number"
@@ -129,35 +140,37 @@ export default function InventoryTerminal({ products, topSellers, leastSellers, 
               onChange={(e) => setSelectedQty(e.target.value)}
               style={{
                 width: '100%',
-                padding: '10px 14px',
-                borderRadius: '8px',
-                backgroundColor: 'rgba(0, 0, 0, 0.4)',
-                border: '1px solid var(--border-color)',
-                color: '#ffffff',
-                fontSize: '0.9rem'
+                padding: '8px 12px',
+                borderRadius: '7px',
+                backgroundColor: 'var(--bg-input)',
+                border: '1px solid var(--border-medium)',
+                color: 'var(--text-primary)',
+                fontSize: '0.85rem',
+                outline: 'none'
               }}
             />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '6px' }}>
-              Terminal Cashier
+            <label style={{ display: 'block', fontSize: '0.72rem', color: 'var(--text-tertiary)', marginBottom: '5px', fontWeight: 600 }}>
+              CASHIER
             </label>
             <select
               value={selectedEmployee}
               onChange={(e) => setSelectedEmployee(e.target.value)}
               style={{
                 width: '100%',
-                padding: '10px 14px',
-                borderRadius: '8px',
-                backgroundColor: 'rgba(0, 0, 0, 0.4)',
-                border: '1px solid var(--border-color)',
-                color: '#ffffff',
-                fontSize: '0.85rem'
+                padding: '8px 12px',
+                borderRadius: '7px',
+                backgroundColor: 'var(--bg-input)',
+                border: '1px solid var(--border-medium)',
+                color: 'var(--text-primary)',
+                fontSize: '0.85rem',
+                outline: 'none'
               }}
             >
               {employees?.map(emp => (
-                <option key={emp.id} value={emp.id} style={{ backgroundColor: '#0f172a' }}>
+                <option key={emp.id} value={emp.id} style={{ backgroundColor: 'var(--bg-surface)' }}>
                   {emp.name} ({emp.role.split(' ')[0]})
                 </option>
               ))}
@@ -165,116 +178,116 @@ export default function InventoryTerminal({ products, topSellers, leastSellers, 
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '6px' }}>
-              Payment Method
+            <label style={{ display: 'block', fontSize: '0.72rem', color: 'var(--text-tertiary)', marginBottom: '5px', fontWeight: 600 }}>
+              PAYMENT
             </label>
             <select
               value={paymentMethod}
               onChange={(e) => setPaymentMethod(e.target.value)}
               style={{
                 width: '100%',
-                padding: '10px 14px',
-                borderRadius: '8px',
-                backgroundColor: 'rgba(0, 0, 0, 0.4)',
-                border: '1px solid var(--border-color)',
-                color: '#ffffff',
-                fontSize: '0.85rem'
+                padding: '8px 12px',
+                borderRadius: '7px',
+                backgroundColor: 'var(--bg-input)',
+                border: '1px solid var(--border-medium)',
+                color: 'var(--text-primary)',
+                fontSize: '0.85rem',
+                outline: 'none'
               }}
             >
-              <option value="UPI (Google Pay)" style={{ backgroundColor: '#0f172a' }}>UPI (Google Pay)</option>
-              <option value="UPI (PhonePe)" style={{ backgroundColor: '#0f172a' }}>UPI (PhonePe)</option>
-              <option value="Credit Card" style={{ backgroundColor: '#0f172a' }}>Credit Card</option>
-              <option value="Cash" style={{ backgroundColor: '#0f172a' }}>Cash</option>
+              <option value="UPI (Google Pay)" style={{ backgroundColor: 'var(--bg-surface)' }}>UPI (Google Pay)</option>
+              <option value="UPI (PhonePe)" style={{ backgroundColor: 'var(--bg-surface)' }}>UPI (PhonePe)</option>
+              <option value="Credit Card" style={{ backgroundColor: 'var(--bg-surface)' }}>Credit Card</option>
+              <option value="Cash" style={{ backgroundColor: 'var(--bg-surface)' }}>Cash</option>
             </select>
           </div>
 
           <div>
             <button
               type="submit"
-              className="btn-primary"
-              style={{ width: '100%', justifyContent: 'center', height: '42px' }}
+              className="btn-solid-primary"
+              style={{ width: '100%', justifyContent: 'center', height: '37px' }}
             >
-              <Scan size={16} />
-              <span>Ingest Scan</span>
+              <Scan size={14} />
+              <span>Record Sale</span>
             </button>
           </div>
         </form>
 
-        {/* Quick Click Barcodes */}
+        {/* Quick Presets */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Quick Scan Presets:</span>
+          <span style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)' }}>Test Barcodes:</span>
           {quickPresets.map((p, idx) => (
             <button
               key={idx}
               type="button"
               onClick={() => setBarcodeInput(p.barcode)}
               style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid var(--border-color)',
-                padding: '4px 10px',
-                borderRadius: '6px',
-                fontSize: '0.75rem',
-                color: '#ffffff',
+                backgroundColor: 'var(--bg-surface-elevated)',
+                border: '1px solid var(--border-subtle)',
+                padding: '3px 8px',
+                borderRadius: '5px',
+                fontSize: '0.72rem',
+                color: 'var(--text-secondary)',
                 cursor: 'pointer'
               }}
             >
-              {p.label} <code style={{ color: '#38bdf8', fontSize: '0.7rem' }}>({p.barcode.slice(-4)})</code>
+              {p.label} <code style={{ color: 'var(--accent-light)', fontSize: '0.68rem' }}>({p.barcode.slice(-4)})</code>
             </button>
           ))}
         </div>
 
-        {/* Scan Feedback Message */}
+        {/* Scan Feedback */}
         {scanMessage && (
           <div style={{
-            marginTop: '16px',
-            padding: '12px 16px',
+            marginTop: '12px',
+            padding: '10px 14px',
             borderRadius: '8px',
-            backgroundColor: scanMessage.type === 'success' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)',
-            border: scanMessage.type === 'success' ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(244, 63, 94, 0.3)',
-            color: scanMessage.type === 'success' ? '#34d399' : '#fb7185',
-            fontSize: '0.85rem',
+            backgroundColor: scanMessage.type === 'success' ? 'var(--badge-emerald-bg)' : 'var(--badge-rose-bg)',
+            border: scanMessage.type === 'success' ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid rgba(244, 63, 94, 0.2)',
+            color: scanMessage.type === 'success' ? 'var(--badge-emerald-text)' : 'var(--badge-rose-text)',
+            fontSize: '0.8rem',
             display: 'flex',
             alignItems: 'center',
             gap: '8px'
           }}>
-            {scanMessage.type === 'success' ? <CheckCircle size={16} /> : <AlertCircle size={16} />}
+            {scanMessage.type === 'success' ? <CheckCircle size={15} /> : <AlertCircle size={15} />}
             <span>{scanMessage.text}</span>
           </div>
         )}
       </div>
 
-      {/* Products & Inventory Matrix */}
-      <div className="glass-panel" style={{ padding: '24px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px', flexWrap: 'wrap', gap: '12px' }}>
+      {/* Catalog Table with Inline Ask Agent Actions */}
+      <div className="card-surface" style={{ padding: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
           <div>
-            <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#ffffff' }}>
-              Live Inventory Catalog & Turnover Velocity
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+              Stock Catalog & Turnover Velocity
             </h3>
-            <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-              Total {products?.length || 0} active SKUs monitored by Billing & Inventory Agent
+            <p style={{ fontSize: '0.74rem', color: 'var(--text-secondary)' }}>
+              Click <strong>Ask Agent</strong> on any row to open the Copilot with that item's telemetry attached.
             </p>
           </div>
 
-          {/* Filter Pills */}
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
             {[
-              { id: 'all', label: 'All Products' },
+              { id: 'all', label: 'All Items' },
               { id: 'top', label: '🔥 Top Sellers' },
-              { id: 'dead', label: '⚠️ Dead / Slow Stock' },
-              { id: 'low', label: '🚨 Low Stock Alerts' }
+              { id: 'dead', label: '⚠️ Stagnant Dead Stock' },
+              { id: 'low', label: '🚨 Low Stock' }
             ].map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 style={{
-                  padding: '6px 14px',
+                  padding: '5px 12px',
                   borderRadius: '6px',
-                  fontSize: '0.8rem',
+                  fontSize: '0.75rem',
                   fontWeight: 600,
                   cursor: 'pointer',
-                  border: activeTab === tab.id ? '1px solid #38bdf8' : '1px solid var(--border-color)',
-                  backgroundColor: activeTab === tab.id ? 'rgba(56, 189, 248, 0.15)' : 'transparent',
-                  color: activeTab === tab.id ? '#38bdf8' : 'var(--text-muted)'
+                  border: activeTab === tab.id ? '1px solid var(--accent)' : '1px solid var(--border-subtle)',
+                  backgroundColor: activeTab === tab.id ? 'var(--accent-subtle)' : 'transparent',
+                  color: activeTab === tab.id ? 'var(--accent-light)' : 'var(--text-secondary)'
                 }}
               >
                 {tab.label}
@@ -283,17 +296,17 @@ export default function InventoryTerminal({ products, topSellers, leastSellers, 
           </div>
         </div>
 
-        {/* Product Table */}
         <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.82rem' }}>
             <thead>
-              <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-muted)', fontSize: '0.75rem' }}>
-                <th style={{ padding: '10px 14px' }}>PRODUCT & SKU</th>
-                <th style={{ padding: '10px 14px' }}>CATEGORY</th>
-                <th style={{ padding: '10px 14px' }}>COST / MRP</th>
-                <th style={{ padding: '10px 14px' }}>STOCK QTY</th>
-                <th style={{ padding: '10px 14px' }}>SOLD (30D)</th>
-                <th style={{ padding: '10px 14px' }}>STATUS & VELOCITY</th>
+              <tr style={{ borderBottom: '1px solid var(--border-subtle)', color: 'var(--text-tertiary)', fontSize: '0.72rem' }}>
+                <th style={{ padding: '8px 12px' }}>PRODUCT & BARCODE</th>
+                <th style={{ padding: '8px 12px' }}>CATEGORY</th>
+                <th style={{ padding: '8px 12px' }}>COST / MRP</th>
+                <th style={{ padding: '8px 12px' }}>STOCK</th>
+                <th style={{ padding: '8px 12px' }}>SOLD (30D)</th>
+                <th style={{ padding: '8px 12px' }}>STATUS</th>
+                <th style={{ padding: '8px 12px', textAlign: 'right' }}>AGENT ACTION</th>
               </tr>
             </thead>
             <tbody>
@@ -303,47 +316,59 @@ export default function InventoryTerminal({ products, topSellers, leastSellers, 
                 const isDead = prod.unitsSoldThisMonth <= 5;
 
                 return (
-                  <tr key={prod.id} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.04)' }}>
-                    <td style={{ padding: '12px 14px' }}>
-                      <div style={{ fontWeight: 700, color: '#ffffff' }}>{prod.name}</div>
-                      <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}>
+                  <tr key={prod.id} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                    <td style={{ padding: '10px 12px' }}>
+                      <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{prod.name}</div>
+                      <div style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', fontFamily: 'monospace' }}>
                         {prod.barcode} • {prod.sku}
                       </div>
                     </td>
-                    <td style={{ padding: '12px 14px', color: 'var(--text-muted)' }}>
+                    <td style={{ padding: '10px 12px', color: 'var(--text-secondary)' }}>
                       {prod.category}
                     </td>
-                    <td style={{ padding: '12px 14px' }}>
-                      <span style={{ color: '#ffffff', fontWeight: 600 }}>₹{prod.sellingPrice}</span>
-                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block' }}>
-                        Cost: ₹{prod.costPrice} ({margin}% margin)
+                    <td style={{ padding: '10px 12px' }}>
+                      <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>₹{prod.sellingPrice}</span>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', display: 'block' }}>
+                        Cost: ₹{prod.costPrice} ({margin}%)
                       </span>
                     </td>
-                    <td style={{ padding: '12px 14px' }}>
+                    <td style={{ padding: '10px 12px' }}>
                       <span style={{
                         fontWeight: 700,
-                        color: isCritical ? '#fb7185' : '#ffffff',
-                        fontSize: '0.95rem'
+                        color: isCritical ? 'var(--badge-rose-text)' : 'var(--text-primary)',
+                        fontSize: '0.9rem'
                       }}>
                         {prod.stockQuantity}
                       </span>
-                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block' }}>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', display: 'block' }}>
                         Min: {prod.minThreshold}
                       </span>
                     </td>
-                    <td style={{ padding: '12px 14px' }}>
-                      <span style={{ fontWeight: 700, color: prod.unitsSoldThisMonth > 100 ? '#34d399' : '#ffffff' }}>
+                    <td style={{ padding: '10px 12px' }}>
+                      <span style={{ fontWeight: 600, color: prod.unitsSoldThisMonth > 100 ? 'var(--badge-emerald-text)' : 'var(--text-primary)' }}>
                         {prod.unitsSoldThisMonth} units
                       </span>
                     </td>
-                    <td style={{ padding: '12px 14px' }}>
+                    <td style={{ padding: '10px 12px' }}>
                       {isCritical ? (
-                        <span className="badge-rose">Stockout Alert</span>
+                        <span className="badge-clean badge-clean-rose">Stockout Alert</span>
                       ) : isDead ? (
-                        <span className="badge-amber">Dead Stock (Liquidate)</span>
+                        <span className="badge-clean badge-clean-amber">Dead Stock</span>
                       ) : (
-                        <span className="badge-emerald">High Velocity</span>
+                        <span className="badge-clean badge-clean-emerald">High Velocity</span>
                       )}
+                    </td>
+                    <td style={{ padding: '10px 12px', textAlign: 'right' }}>
+                      <button
+                        onClick={() => onOpenCopilotWithContext({
+                          type: 'PRODUCT',
+                          title: prod.name,
+                          details: `SKU: ${prod.sku}, Current Stock: ${prod.stockQuantity}, Min Threshold: ${prod.minThreshold}, Sold this Month: ${prod.unitsSoldThisMonth}, Cost Price: ₹${prod.costPrice}, Selling Price: ₹${prod.sellingPrice}, Status: ${isCritical ? 'Critical Stockout' : isDead ? 'Dead Stock' : 'Active Velocity'}`
+                        })}
+                        className="btn-agent-trigger"
+                      >
+                        <Sparkles size={11} /> Ask Agent
+                      </button>
                     </td>
                   </tr>
                 );

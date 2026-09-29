@@ -1,121 +1,123 @@
 import React from 'react';
-import { Users, Award, Clock, DollarSign, ArrowUpRight, Zap, Target } from 'lucide-react';
+import { Users, Award, Clock, Sparkles } from 'lucide-react';
 
-export default function WorkforceView({ employees }) {
+export default function WorkforceView({ employees, onOpenCopilotWithContext }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
       {/* Header */}
-      <div className="glass-panel" style={{
-        padding: '24px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: '12px'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '10px',
-            backgroundColor: 'rgba(139, 92, 246, 0.15)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <Users size={22} color="#c084fc" />
+      <div className="card-surface" style={{ padding: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '8px',
+              backgroundColor: 'var(--accent-subtle)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'var(--accent)'
+            }}>
+              <Users size={18} />
+            </div>
+            <div>
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                Workforce Intelligence & Roster Productivity
+              </h3>
+              <p style={{ fontSize: '0.74rem', color: 'var(--text-secondary)' }}>
+                Sales tracked per associate, counter efficiency scores, and AI shift scheduling recommendations.
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#ffffff' }}>
-              Workforce Intelligence & Associate Performance
-            </h3>
-            <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-              Real-time POS sales tracking per associate, shift productivity, and AI commission recommendations.
-            </p>
-          </div>
+
+          <button
+            onClick={() => onOpenCopilotWithContext({
+              type: 'WORKFORCE_OPTIMIZATION',
+              title: 'Store Workforce Optimization',
+              details: `Active staff: ${employees?.map(e => `${e.name} (Sales: ₹${e.salesGeneratedThisMonth})`).join(', ')}`
+            })}
+            className="btn-agent-trigger"
+          >
+            <Sparkles size={12} /> Ask Agent to Optimize Shifts
+          </button>
         </div>
-        <span className="badge-purple">
-          <Award size={12} /> Shift Optimization Live
-        </span>
       </div>
 
-      {/* Employee Cards Grid */}
+      {/* Grid of Associates */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-        gap: '18px'
+        gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+        gap: '14px'
       }}>
         {employees?.map(emp => (
-          <div key={emp.id} className="glass-panel" style={{ padding: '20px' }}>
-            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '14px' }}>
+          <div key={emp.id} className="card-surface" style={{ padding: '18px' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '10px' }}>
               <div>
-                <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#ffffff' }}>{emp.name}</h4>
-                <p style={{ fontSize: '0.75rem', color: '#38bdf8', fontWeight: 500 }}>{emp.role}</p>
+                <h4 style={{ fontSize: '0.98rem', fontWeight: 700, color: 'var(--text-primary)' }}>{emp.name}</h4>
+                <p style={{ fontSize: '0.74rem', color: 'var(--accent-light)', fontWeight: 500 }}>{emp.role}</p>
               </div>
-              <span className={emp.efficiencyScore >= 94 ? "badge-emerald" : "badge-blue"}>
-                {emp.efficiencyScore}% Efficiency
+              <span className={emp.efficiencyScore >= 94 ? "badge-clean badge-clean-emerald" : "badge-clean badge-clean-blue"}>
+                {emp.efficiencyScore}% Score
               </span>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '14px' }}>
-              <Clock size={13} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.72rem', color: 'var(--text-tertiary)', marginBottom: '12px' }}>
+              <Clock size={12} />
               <span>{emp.shift}</span>
             </div>
 
             <div style={{
               display: 'grid',
               gridTemplateColumns: '1fr 1fr',
-              gap: '10px',
-              backgroundColor: 'rgba(0, 0, 0, 0.3)',
-              padding: '12px',
+              gap: '8px',
+              backgroundColor: 'var(--bg-surface-elevated)',
+              padding: '10px 12px',
               borderRadius: '8px',
-              marginBottom: '14px'
+              marginBottom: '12px'
             }}>
               <div>
-                <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>MONTHLY SALES</span>
-                <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#ffffff' }}>
+                <span style={{ fontSize: '0.68rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>BILLED SALES</span>
+                <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-primary)' }}>
                   ₹{emp.salesGeneratedThisMonth?.toLocaleString('en-IN')}
                 </div>
               </div>
               <div>
-                <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>AVG BASKET VALUE</span>
-                <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#34d399' }}>
+                <span style={{ fontSize: '0.68rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>AVG BASKET</span>
+                <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--badge-emerald-text)' }}>
                   {emp.avgBasketValue ? `₹${emp.avgBasketValue}` : 'N/A'}
                 </div>
               </div>
               <div>
-                <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>TRANSACTIONS</span>
-                <div style={{ fontSize: '0.95rem', fontWeight: 700, color: '#ffffff' }}>
+                <span style={{ fontSize: '0.68rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>TRANSACTIONS</span>
+                <div style={{ fontSize: '0.86rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                   {emp.transactionsCount} bills
                 </div>
               </div>
               <div>
-                <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>UPSELL CONVERSION</span>
-                <div style={{ fontSize: '0.95rem', fontWeight: 700, color: '#fbbf24' }}>
+                <span style={{ fontSize: '0.68rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>UPSELL CONV</span>
+                <div style={{ fontSize: '0.86rem', fontWeight: 700, color: 'var(--badge-amber-text)' }}>
                   {emp.upsellSuccessRate}
                 </div>
               </div>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.75rem' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Base Salary: ₹{emp.monthlySalary?.toLocaleString('en-IN')}</span>
-              <span style={{ color: '#38bdf8', fontWeight: 600 }}>Attendance: {emp.attendanceRate}</span>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)' }}>
+                Salary: ₹{emp.monthlySalary?.toLocaleString('en-IN')}
+              </span>
+              <button
+                onClick={() => onOpenCopilotWithContext({
+                  type: 'EMPLOYEE_EVALUATION',
+                  title: `Associate Evaluation: ${emp.name}`,
+                  details: `Role: ${emp.role}, Shift: ${emp.shift}, Monthly Sales: ₹${emp.salesGeneratedThisMonth}, Transactions: ${emp.transactionsCount}, Avg Basket: ₹${emp.avgBasketValue}, Efficiency: ${emp.efficiencyScore}%, Upsell Rate: ${emp.upsellSuccessRate}`
+                })}
+                className="btn-agent-trigger"
+              >
+                <Sparkles size={11} /> Ask Agent
+              </button>
             </div>
           </div>
         ))}
-      </div>
-
-      {/* AI Workforce Strategy Insight */}
-      <div className="glass-panel" style={{ padding: '20px', borderLeft: '4px solid #38bdf8' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-          <Target size={18} color="#38bdf8" />
-          <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#ffffff' }}>
-            Workforce Scaling Directive (Strategy & CRM Agent)
-          </h4>
-        </div>
-        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
-          Pooja Sharma generates 44% of total counter volume with a 96% efficiency rating. Implement a 2.5% incentive bonus on high-margin boAt audio sales. Realign Rahul Varma's schedule to 17:30 - 21:30 to maximize footfall conversions as tech professionals return to Madhapur from Cyber Gateway.
-        </p>
       </div>
     </div>
   );

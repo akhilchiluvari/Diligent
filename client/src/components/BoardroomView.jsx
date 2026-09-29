@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Users, Sparkles, TrendingUp, Package, Megaphone, CheckCircle, ArrowRight, ShieldCheck, Play, Zap } from 'lucide-react';
+import { Users, Sparkles, TrendingUp, Package, Megaphone, CheckCircle, Play, Zap, ArrowRight } from 'lucide-react';
 
-export default function BoardroomView({ consensusData, onTriggerConsensus, isRunning, onExecuteAction }) {
+export default function BoardroomView({ consensusData, onTriggerConsensus, isRunning, onExecuteAction, onOpenCopilotWithContext }) {
   const [activeRoadmapDay, setActiveRoadmapDay] = useState('30');
 
   const agents = [
@@ -9,165 +9,172 @@ export default function BoardroomView({ consensusData, onTriggerConsensus, isRun
       name: "Billing & Inventory Agent",
       role: "Telemetry & Stock Turnover",
       icon: Package,
-      color: "#38bdf8",
-      status: "Telemetry Live"
+      status: "Telemetry Live",
+      badgeType: "blue"
     },
     {
       name: "Sales & CRM Agent",
       role: "Customer LTV & Retention",
       icon: Users,
-      color: "#34d399",
-      status: "Cohort Analyzed"
+      status: "Cohort Analyzed",
+      badgeType: "emerald"
     },
     {
       name: "Strategy & Scaling Agent",
       role: "Virtual Board Chair & Capital Optimization",
       icon: TrendingUp,
-      color: "#c084fc",
-      status: "Synthesizing"
+      status: "Consensus Active",
+      badgeType: "accent"
     },
     {
       name: "Web & Marketing Agent",
       role: "Headless CMS & Content Engine",
       icon: Megaphone,
-      color: "#fbbf24",
-      status: "Campaigns Queued"
+      status: "Campaigns Queued",
+      badgeType: "amber"
     }
   ];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
       {/* Top Banner / Session Trigger */}
-      <div className="glass-panel" style={{
-        padding: '24px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: '20px',
-        background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.6) 100%)',
-        border: '1px solid rgba(139, 92, 246, 0.3)'
-      }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
-            <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#ffffff' }}>
-              Virtual Board of Directors
-            </h2>
-            <span className="badge-purple">
-              <Sparkles size={12} /> Autonomous Swarm Consensus
-            </span>
+      <div className="card-surface" style={{ padding: '22px' }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '14px'
+        }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+                Virtual Board of Directors
+              </h2>
+              <span className="badge-clean badge-clean-accent">
+                <Sparkles size={11} /> Autonomous Swarm Consensus
+              </span>
+            </div>
+            <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', maxWidth: '640px' }}>
+              Synchronized multi-agent system analyzing inventory velocity, customer churn, and marketing opportunities to author concrete growth blueprints for SMB scaling.
+            </p>
           </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', maxWidth: '650px' }}>
-            A synchronized swarm of specialized AI agents continuously evaluating inventory telemetry, customer churn, and marketing opportunities to author concrete growth blueprints for SMB scaling.
-          </p>
-        </div>
 
-        <button
-          className="btn-primary"
-          onClick={onTriggerConsensus}
-          disabled={isRunning}
-          style={{
-            padding: '12px 24px',
-            fontSize: '0.95rem',
-            background: 'linear-gradient(135deg, #7c3aed 0%, #2563eb 100%)',
-            boxShadow: '0 4px 20px rgba(124, 58, 237, 0.4)'
-          }}
-        >
-          {isRunning ? (
-            <>
-              <div className="pulse-dot" style={{ backgroundColor: '#ffffff' }} />
-              <span>Agents Deliberating Consensus...</span>
-            </>
-          ) : (
-            <>
-              <Play size={16} fill="#ffffff" />
-              <span>Convene Swarm Consensus Session</span>
-            </>
-          )}
-        </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <button
+              onClick={() => onOpenCopilotWithContext({
+                type: 'STRATEGY_DEEP_DIVE',
+                title: 'Virtual Boardroom Growth Strategy',
+                details: consensusData ? `Executive Thesis: ${consensusData.strategyReport?.executiveThesis}` : 'Discuss store scaling roadmap and capital allocation.'
+              })}
+              className="btn-agent-trigger"
+            >
+              <Sparkles size={12} /> Ask Agent About Roadmap
+            </button>
+
+            <button
+              className="btn-solid-primary"
+              onClick={onTriggerConsensus}
+              disabled={isRunning}
+            >
+              {isRunning ? (
+                <>
+                  <div className="pulse-indicator" style={{ backgroundColor: '#ffffff' }} />
+                  <span>Agents Deliberating...</span>
+                </>
+              ) : (
+                <>
+                  <Play size={14} fill="#ffffff" />
+                  <span>Convene Consensus Session</span>
+                </>
+              )}
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* 4 Agent Swarm Cards */}
+      {/* 4 Agent Status Cards */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-        gap: '16px'
+        gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))',
+        gap: '12px'
       }}>
         {agents.map((ag, i) => {
           const Icon = ag.icon;
           return (
-            <div key={i} className="glass-panel" style={{ padding: '18px', position: 'relative', overflow: 'hidden' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '10px' }}>
+            <div key={i} className="card-surface" style={{ padding: '14px 16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
                 <div style={{
-                  width: '38px',
-                  height: '38px',
-                  borderRadius: '10px',
-                  backgroundColor: `${ag.color}18`,
-                  border: `1px solid ${ag.color}40`,
+                  width: '30px',
+                  height: '30px',
+                  borderRadius: '7px',
+                  backgroundColor: 'var(--accent-subtle)',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  color: 'var(--accent)'
                 }}>
-                  <Icon size={18} color={ag.color} />
+                  <Icon size={16} />
                 </div>
                 <div>
-                  <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#ffffff' }}>{ag.name}</h4>
-                  <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{ag.role}</p>
+                  <h4 style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)' }}>{ag.name}</h4>
+                  <p style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)' }}>{ag.role}</p>
                 </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '12px' }}>
-                <span style={{ fontSize: '0.75rem', color: ag.color, fontWeight: 600 }}>{ag.status}</span>
-                <div className="pulse-dot" style={{ backgroundColor: ag.color }} />
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '8px' }}>
+                <span className={`badge-clean badge-clean-${ag.badgeType}`}>{ag.status}</span>
+                <div className="pulse-indicator" />
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* Consensus Results Section */}
+      {/* Consensus Output */}
       {consensusData && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {/* Executive Thesis Card */}
-          <div className="glass-panel" style={{ padding: '24px', borderLeft: '4px solid #7c3aed' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', flexWrap: 'wrap', gap: '10px' }}>
+          <div className="card-surface" style={{ padding: '20px', borderLeft: '4px solid var(--accent)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px', flexWrap: 'wrap', gap: '8px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Zap size={18} color="#c084fc" />
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#ffffff' }}>Executive Growth Thesis</h3>
+                <Zap size={16} color="var(--accent)" />
+                <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)' }}>Executive Growth Thesis</h3>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span className="badge-emerald">Consensus: {consensusData.consensusAlignmentScore || '98.4%'}</span>
-                <span className="badge-blue">Session #{consensusData.sessionId?.slice(-6)}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span className="badge-clean badge-clean-emerald">Consensus: {consensusData.consensusAlignmentScore || '98.4%'}</span>
+                <span className="badge-clean badge-clean-blue">Session #{consensusData.sessionId?.slice(-6)}</span>
               </div>
             </div>
-            <p style={{ fontSize: '0.95rem', color: '#e2e8f0', lineHeight: 1.7, marginBottom: '18px' }}>
+
+            <p style={{ fontSize: '0.88rem', color: 'var(--text-primary)', lineHeight: 1.6, marginBottom: '16px' }}>
               {consensusData.strategyReport?.executiveThesis}
             </p>
 
             {/* Projected KPIs */}
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: '12px',
-              backgroundColor: 'rgba(0, 0, 0, 0.3)',
-              padding: '16px',
-              borderRadius: '10px',
-              border: '1px solid var(--border-color)'
+              gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+              gap: '10px',
+              backgroundColor: 'var(--bg-surface-elevated)',
+              padding: '12px',
+              borderRadius: '8px',
+              border: '1px solid var(--border-subtle)'
             }}>
               <div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Expected Revenue Boost</span>
-                <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#34d399' }}>
+                <span style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>PROJECTED REVENUE BOOST</span>
+                <div style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--badge-emerald-text)' }}>
                   {consensusData.strategyReport?.projectedMetrics?.expectedRevenueBoost || '+28.5%'}
                 </div>
               </div>
               <div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Inventory Velocity Gain</span>
-                <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#38bdf8' }}>
+                <span style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>INVENTORY VELOCITY</span>
+                <div style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--badge-blue-text)' }}>
                   {consensusData.strategyReport?.projectedMetrics?.inventoryTurnoverIncrease || '2.1x Turnover'}
                 </div>
               </div>
               <div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Liquidated Working Capital</span>
-                <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fbbf24' }}>
+                <span style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>WORKING CAPITAL RECOVERED</span>
+                <div style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--badge-amber-text)' }}>
                   {consensusData.strategyReport?.projectedMetrics?.projectedWorkingCapitalGain || '₹2,10,000'}
                 </div>
               </div>
@@ -175,25 +182,25 @@ export default function BoardroomView({ consensusData, onTriggerConsensus, isRun
           </div>
 
           {/* 30-60-90 Day Scaling Plan */}
-          <div className="glass-panel" style={{ padding: '24px' }}>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#ffffff', marginBottom: '16px' }}>
+          <div className="card-surface" style={{ padding: '20px' }}>
+            <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '12px' }}>
               SMB Scaling Roadmap: Small to Medium Enterprise
             </h3>
 
-            <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+            <div style={{ display: 'flex', gap: '6px', marginBottom: '12px' }}>
               {['30', '60', '90'].map(day => (
                 <button
                   key={day}
                   onClick={() => setActiveRoadmapDay(day)}
                   style={{
-                    padding: '8px 18px',
-                    borderRadius: '8px',
-                    border: activeRoadmapDay === day ? '1px solid #38bdf8' : '1px solid var(--border-color)',
-                    backgroundColor: activeRoadmapDay === day ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255, 255, 255, 0.03)',
-                    color: activeRoadmapDay === day ? '#38bdf8' : 'var(--text-muted)',
+                    padding: '6px 14px',
+                    borderRadius: '6px',
+                    border: activeRoadmapDay === day ? '1px solid var(--accent)' : '1px solid var(--border-subtle)',
+                    backgroundColor: activeRoadmapDay === day ? 'var(--accent-subtle)' : 'transparent',
+                    color: activeRoadmapDay === day ? 'var(--accent-light)' : 'var(--text-secondary)',
                     fontWeight: 600,
                     cursor: 'pointer',
-                    fontSize: '0.85rem'
+                    fontSize: '0.78rem'
                   }}
                 >
                   Day {day} Milestone
@@ -202,78 +209,76 @@ export default function BoardroomView({ consensusData, onTriggerConsensus, isRun
             </div>
 
             <div style={{
-              backgroundColor: 'rgba(0, 0, 0, 0.25)',
-              padding: '18px',
-              borderRadius: '10px',
-              border: '1px solid var(--border-color)',
-              fontSize: '0.9rem',
-              color: '#e2e8f0',
+              backgroundColor: 'var(--bg-surface-elevated)',
+              padding: '14px 16px',
+              borderRadius: '8px',
+              border: '1px solid var(--border-subtle)',
+              fontSize: '0.86rem',
+              color: 'var(--text-primary)',
               lineHeight: 1.6
             }}>
               <strong>Focus & Execution:</strong> {consensusData.strategyReport?.roadmap30_60_90?.[`day${activeRoadmapDay}`]}
             </div>
           </div>
 
-          {/* Capital Reallocation & Human-in-the-Loop Safeguard Action Items */}
+          {/* Capital Matrix & Human-in-the-Loop Action Checklist */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
-            gap: '20px'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: '16px'
           }}>
-            {/* Capital Matrix */}
-            <div className="glass-panel" style={{ padding: '20px' }}>
-              <h4 style={{ fontSize: '1rem', fontWeight: 700, color: '#38bdf8', marginBottom: '12px' }}>
+            <div className="card-surface" style={{ padding: '18px' }}>
+              <h4 style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--accent-light)', marginBottom: '8px' }}>
                 Capital Reallocation Matrix
               </h4>
-              <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '12px' }}>
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '10px' }}>
                 {consensusData.strategyReport?.capitalReallocation?.liquidationAction}
               </p>
               <div style={{
-                backgroundColor: 'rgba(56, 189, 248, 0.05)',
-                border: '1px solid rgba(56, 189, 248, 0.2)',
-                padding: '12px',
-                borderRadius: '8px',
-                fontSize: '0.82rem',
-                color: '#bae6fd'
+                backgroundColor: 'var(--bg-surface-elevated)',
+                border: '1px solid var(--border-subtle)',
+                padding: '10px 12px',
+                borderRadius: '6px',
+                fontSize: '0.78rem',
+                color: 'var(--text-primary)'
               }}>
                 <strong>Reinvestment Target:</strong> {consensusData.strategyReport?.capitalReallocation?.reinvestmentTarget}
               </div>
             </div>
 
-            {/* Actionable Human-in-the-Loop Checklist */}
-            <div className="glass-panel" style={{ padding: '20px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-                <h4 style={{ fontSize: '1rem', fontWeight: 700, color: '#34d399' }}>
+            <div className="card-surface" style={{ padding: '18px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                <h4 style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--badge-emerald-text)' }}>
                   Safeguard Execution Queue
                 </h4>
-                <span className="badge-amber">Human-in-the-Loop</span>
+                <span className="badge-clean badge-clean-amber">Human-in-the-Loop</span>
               </div>
-              <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '14px' }}>
-                Each autonomous step requires merchant approval before modifying store stock or launching marketing.
+              <p style={{ fontSize: '0.74rem', color: 'var(--text-tertiary)', marginBottom: '10px' }}>
+                Merchant authorization required before updating inventory or firing marketing.
               </p>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {consensusData.actionableSteps?.map(step => (
                   <div key={step.id} style={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                    border: '1px solid var(--border-color)',
-                    padding: '12px 14px',
-                    borderRadius: '8px',
+                    backgroundColor: 'var(--bg-surface-elevated)',
+                    border: '1px solid var(--border-subtle)',
+                    padding: '10px 12px',
+                    borderRadius: '7px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    gap: '12px'
+                    gap: '10px'
                   }}>
                     <div>
-                      <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#ffffff' }}>{step.title}</div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{step.description}</div>
+                      <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-primary)' }}>{step.title}</div>
+                      <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>{step.description}</div>
                     </div>
                     <button
-                      className="btn-primary"
-                      style={{ padding: '6px 12px', fontSize: '0.78rem', flexShrink: 0 }}
+                      className="btn-solid-primary"
+                      style={{ padding: '5px 10px', fontSize: '0.74rem', flexShrink: 0 }}
                       onClick={() => onExecuteAction(step)}
                     >
-                      <CheckCircle size={13} />
+                      <CheckCircle size={12} />
                       <span>Approve</span>
                     </button>
                   </div>

@@ -179,7 +179,7 @@ app.use((req, res, next) => {
 if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
     console.log(`[Diligent Server] Multi-Agent Operational Engine online at http://localhost:${PORT}`);
-    console.log(`[Diligent Server] Grok Inference Model: ${process.env.GROK_MODEL || 'grok-2-latest'} (Fallback enabled: ${process.env.USE_MOCK_FALLBACK})`);
+    console.log(`[Diligent Server] Groq LPU Model: ${process.env.GROQ_MODEL || 'openai/gpt-oss-120b'} (Fallback enabled: ${process.env.USE_MOCK_FALLBACK})`);
   });
 }
 

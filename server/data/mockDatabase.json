@@ -8,8 +8,8 @@
     "gstin": "36AABCS1429B1Z8",
     "currency": "INR",
     "currencySymbol": "₹",
-    "termsAccepted": false,
-    "termsAcceptedAt": null,
+    "termsAccepted": true,
+    "termsAcceptedAt": "2026-09-29T15:44:35.972Z",
     "lastAudit": "2026-09-29T20:45:00Z"
   },
   "products": [
@@ -190,7 +190,12 @@
       "supplier": "Imagine Marketing Tech Hub",
       "receivedDate": "2026-09-28T14:30:00Z",
       "items": [
-        { "sku": "ELEC-BOAT-255", "quantity": 50, "unitCost": 850, "total": 42500 }
+        {
+          "sku": "ELEC-BOAT-255",
+          "quantity": 50,
+          "unitCost": 850,
+          "total": 42500
+        }
       ],
       "totalCost": 42500,
       "status": "Received & Verified",
@@ -202,7 +207,12 @@
       "supplier": "Gujarat Co-op Milk Marketing Fed",
       "receivedDate": "2026-09-27T08:15:00Z",
       "items": [
-        { "sku": "FMCG-AMUL-500", "quantity": 100, "unitCost": 245, "total": 24500 }
+        {
+          "sku": "FMCG-AMUL-500",
+          "quantity": 100,
+          "unitCost": 245,
+          "total": 24500
+        }
       ],
       "totalCost": 24500,
       "status": "Received & Verified",
@@ -214,7 +224,12 @@
       "supplier": "Tata Consumer Products Depot",
       "receivedDate": "2026-09-25T11:00:00Z",
       "items": [
-        { "sku": "GROC-TATA-DAL", "quantity": 80, "unitCost": 148, "total": 11840 }
+        {
+          "sku": "GROC-TATA-DAL",
+          "quantity": 80,
+          "unitCost": 148,
+          "total": 11840
+        }
       ],
       "totalCost": 11840,
       "status": "Received & Verified",
@@ -231,8 +246,18 @@
       "employeeId": "EMP-001",
       "employeeName": "Pooja Sharma",
       "items": [
-        { "sku": "ELEC-BOAT-255", "name": "boAt Rockerz 255 Pro+", "qty": 1, "price": 1499 },
-        { "sku": "FMCG-CAD-SILK", "name": "Cadbury Dairy Milk Silk 150g", "qty": 2, "price": 180 }
+        {
+          "sku": "ELEC-BOAT-255",
+          "name": "boAt Rockerz 255 Pro+",
+          "qty": 1,
+          "price": 1499
+        },
+        {
+          "sku": "FMCG-CAD-SILK",
+          "name": "Cadbury Dairy Milk Silk 150g",
+          "qty": 2,
+          "price": 180
+        }
       ],
       "subtotal": 1859,
       "gstAmount": 266,
@@ -248,9 +273,24 @@
       "employeeId": "EMP-002",
       "employeeName": "Kiran Kumar",
       "items": [
-        { "sku": "GROC-TATA-DAL", "name": "Tata Sampann Organic Moong Dal 1kg", "qty": 2, "price": 195 },
-        { "sku": "GROC-BASMATI-5K", "name": "India Gate Classic Basmati Rice 5kg", "qty": 1, "price": 799 },
-        { "sku": "FMCG-AMUL-500", "name": "Amul Butter 500g", "qty": 1, "price": 285 }
+        {
+          "sku": "GROC-TATA-DAL",
+          "name": "Tata Sampann Organic Moong Dal 1kg",
+          "qty": 2,
+          "price": 195
+        },
+        {
+          "sku": "GROC-BASMATI-5K",
+          "name": "India Gate Classic Basmati Rice 5kg",
+          "qty": 1,
+          "price": 799
+        },
+        {
+          "sku": "FMCG-AMUL-500",
+          "name": "Amul Butter 500g",
+          "qty": 1,
+          "price": 285
+        }
       ],
       "subtotal": 1474,
       "gstAmount": 73,
@@ -266,8 +306,18 @@
       "employeeId": "EMP-001",
       "employeeName": "Pooja Sharma",
       "items": [
-        { "sku": "ELEC-BOAT-255", "name": "boAt Rockerz 255 Pro+", "qty": 1, "price": 1499 },
-        { "sku": "FMCG-BEV-CRAN", "name": "Real Fruit Cranberry Juice 1L", "qty": 2, "price": 145 }
+        {
+          "sku": "ELEC-BOAT-255",
+          "name": "boAt Rockerz 255 Pro+",
+          "qty": 1,
+          "price": 1499
+        },
+        {
+          "sku": "FMCG-BEV-CRAN",
+          "name": "Real Fruit Cranberry Juice 1L",
+          "qty": 2,
+          "price": 145
+        }
       ],
       "subtotal": 1789,
       "gstAmount": 225,
@@ -283,8 +333,18 @@
       "employeeId": "EMP-003",
       "employeeName": "Rahul Varma",
       "items": [
-        { "sku": "FMCG-CAD-SILK", "name": "Cadbury Dairy Milk Silk 150g", "qty": 3, "price": 180 },
-        { "sku": "FMCG-BEV-CRAN", "name": "Real Fruit Cranberry Juice 1L", "qty": 1, "price": 145 }
+        {
+          "sku": "FMCG-CAD-SILK",
+          "name": "Cadbury Dairy Milk Silk 150g",
+          "qty": 3,
+          "price": 180
+        },
+        {
+          "sku": "FMCG-BEV-CRAN",
+          "name": "Real Fruit Cranberry Juice 1L",
+          "qty": 1,
+          "price": 145
+        }
       ],
       "subtotal": 685,
       "gstAmount": 95,
@@ -433,6 +493,30 @@
       "agent": "Web & Marketing Agent",
       "detail": "Autonomously drafted 'Dussehra Mega Tech & Kitchen Bonanza' bundle campaign targeting Dead Stock SKU clearance.",
       "severity": "INFO"
+    },
+    {
+      "id": "LOG-2471",
+      "timestamp": "2026-09-29T15:44:32.471Z",
+      "type": "SWARM_CONSENSUS_INITIATED",
+      "agent": "Virtual Board of Directors",
+      "detail": "Consensus session triggered across 4 specialized agents. Target Provider: Diligent Edge Neural Engine (Local Fallback) (slm-edge-quantized).",
+      "severity": "ACTION_REQUIRED"
+    },
+    {
+      "id": "LOG-2505",
+      "timestamp": "2026-09-29T15:44:32.505Z",
+      "type": "SWARM_CONSENSUS_COMPLETED",
+      "agent": "Virtual Board of Directors",
+      "detail": "Synthesized unified SMB Scaling Directive in 34ms. Consensus reached with 98.4% alignment score.",
+      "severity": "COMPLIANCE"
+    },
+    {
+      "id": "LOG-5972",
+      "timestamp": "2026-09-29T15:44:35.972Z",
+      "type": "LEGAL_TERMS_ACCEPTED",
+      "agent": "Legal & Compliance Gateway",
+      "detail": "Terms of Advisory & Liability Waiver explicitly accepted by operator. Audit logged at IP ::1",
+      "severity": "COMPLIANCE"
     }
   ]
 }

@@ -5,13 +5,14 @@ import BoardroomView from './components/BoardroomView';
 import InventoryTerminal from './components/InventoryTerminal';
 import MarketingStudio from './components/MarketingStudio';
 import WorkforceView from './components/WorkforceView';
-import CopilotChat from './components/CopilotChat';
 import AuditLogsView from './components/AuditLogsView';
 import LegalModal from './components/LegalModal';
 import SafeguardModal from './components/SafeguardModal';
-import { Users, Package, Megaphone, Terminal, Bot, Sparkles, TrendingUp, HelpCircle } from 'lucide-react';
+import FloatingCopilot from './components/FloatingCopilot';
+import { Users, Package, Megaphone, Terminal, TrendingUp, Sparkles } from 'lucide-react';
 
 export default function App() {
+  const [theme, setTheme] = useState(() => localStorage.getItem('diligent_theme') || 'dark');
   const [activeTab, setActiveTab] = useState('boardroom');
   const [stats, setStats] = useState(null);
   const [business, setBusiness] = useState(null);
@@ -32,24 +33,45 @@ export default function App() {
   const [campaignData, setCampaignData] = useState(null);
   const [isGeneratingCampaign, setIsGeneratingCampaign] = useState(false);
 
-  // Chat state
+  // Floating Contextual Copilot state
+  const [isCopilotOpen, setIsCopilotOpen] = useState(false);
+  const [attachedContext, setAttachedContext] = useState(null);
   const [chatMessages, setChatMessages] = useState([
     {
       sender: 'bot',
-      text: "Namaste! I am Diligent, your Autonomous Business Consultant. I'm connected to your real-time POS barcode scans, inventory ledgers, and employee metrics. What would you like to review today?",
+      text: "Namaste! I am Diligent, your Autonomous Business Consultant powered by Groq 120B. I monitor your live POS barcodes, stock turnover, and associate productivity. How can I help you scale today?",
       time: 'Just now'
     }
   ]);
   const [isChatWaiting, setIsChatWaiting] = useState(false);
 
-  // Safeguard state
+  // Safeguard modal state
   const [selectedSafeguardAction, setSelectedSafeguardAction] = useState(null);
   const [isSafeguardOpen, setIsSafeguardOpen] = useState(false);
 
-  // Initial Data Fetch
+  // Theme synchronization
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('diligent_theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+  };
+
+  // Open Copilot with context from any item or tab
+  const handleOpenCopilotWithContext = (contextObj) => {
+    setAttachedContext(contextObj);
+    setIsCopilotOpen(true);
+  };
+
+  const handleClearContext = () => {
+    setAttachedContext(null);
+  };
+
+  // Data fetching
   const refreshAllData = async () => {
     try {
-      // 1. Stats
       const statsRes = await fetch('/api/dashboard/stats');
       const statsJson = await statsRes.json();
       if (statsJson.success) {
@@ -60,7 +82,6 @@ export default function App() {
         }
       }
 
-      // 2. Products
       const prodRes = await fetch('/api/products');
       const prodJson = await prodRes.json();
       if (prodJson.success) {
@@ -70,26 +91,21 @@ export default function App() {
         setLowStock(prodJson.lowStock);
       }
 
-      // 3. Employees
       const empRes = await fetch('/api/employees');
       const empJson = await empRes.json();
       if (empJson.success) setEmployees(empJson.employees);
 
-      // 4. Logs
       const logsRes = await fetch('/api/logs?limit=30');
       const logsJson = await logsRes.json();
       if (logsJson.success) setLogs(logsJson.logs);
 
-      // 5. Agent Provider
       const agentRes = await fetch('/api/agents/status');
       const agentJson = await agentRes.json();
       if (agentJson.success) setActiveProvider(agentJson.activeProvider);
 
-      // 6. Legal Terms
       const legalRes = await fetch('/api/legal/terms');
       const legalJson = await legalRes.json();
       if (legalJson.success) setLegalData(legalJson.legal);
-
     } catch (err) {
       console.error('Failed fetching data:', err);
     }
@@ -99,7 +115,7 @@ export default function App() {
     refreshAllData();
   }, []);
 
-  // Trigger Swarm Consensus
+  // Swarm Consensus
   const handleTriggerConsensus = async () => {
     setIsConsensusRunning(true);
     try {
@@ -120,14 +136,13 @@ export default function App() {
     }
   };
 
-  // Run initial consensus once on mount if empty
   useEffect(() => {
     if (!consensusData && !isConsensusRunning) {
       handleTriggerConsensus();
     }
   }, []);
 
-  // Scan Sale via POS simulator
+  // Scan Sale
   const handleScanSale = async (payload) => {
     const res = await fetch('/api/sales/checkout', {
       method: 'POST',
@@ -141,7 +156,7 @@ export default function App() {
     return data;
   };
 
-  // Generate Marketing Campaign
+  // Marketing Campaign Generation
   const handleGenerateCampaign = async ({ focusType, targetSku }) => {
     setIsGeneratingCampaign(true);
     try {
@@ -161,7 +176,7 @@ export default function App() {
     }
   };
 
-  // Chat message send
+  // Copilot message sending
   const handleSendMessage = async (queryText) => {
     const userMsg = {
       sender: 'user',
@@ -199,7 +214,7 @@ export default function App() {
     }
   };
 
-  // Accept Legal Terms
+  // Accept Terms
   const handleAcceptTerms = async () => {
     const res = await fetch('/api/legal/accept', { method: 'POST' });
     const data = await res.json();
@@ -209,7 +224,7 @@ export default function App() {
     }
   };
 
-  // Safeguard Action Execution
+  // Safeguard confirmation
   const handleOpenSafeguard = (actionItem) => {
     setSelectedSafeguardAction(actionItem);
     setIsSafeguardOpen(true);
@@ -232,39 +247,42 @@ export default function App() {
   };
 
   const navigationTabs = [
-    { id: 'boardroom', label: 'Virtual Board of Directors', icon: TrendingUp },
-    { id: 'inventory', label: 'Inventory & Barcode Scanner', icon: Package },
-    { id: 'marketing', label: 'AI Marketing Studio', icon: Megaphone },
-    { id: 'workforce', label: 'Workforce & Productivity', icon: Users },
-    { id: 'copilot', label: 'Diligent Copilot (Chat)', icon: Bot },
-    { id: 'telemetry', label: 'Live Telemetry & Logs', icon: Terminal }
+    { id: 'boardroom', label: 'Virtual Boardroom', icon: TrendingUp },
+    { id: 'inventory', label: 'Inventory & POS', icon: Package },
+    { id: 'marketing', label: 'AI Marketing', icon: Megaphone },
+    { id: 'workforce', label: 'Workforce CRM', icon: Users },
+    { id: 'telemetry', label: 'Live Logs', icon: Terminal }
   ];
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* Sticky Navbar */}
+      {/* Top Navbar */}
       <Navbar
         business={{ name: stats?.businessName }}
         termsAccepted={termsAccepted}
         onOpenLegal={() => setIsLegalModalOpen(true)}
         activeProvider={activeProvider}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+        onOpenCopilot={() => setIsCopilotOpen(true)}
       />
 
       <main style={{ maxWidth: '1440px', margin: '0 auto', padding: '0 24px 60px 24px', width: '100%', flex: 1 }}>
-        {/* Top KPI Metrics Bar */}
+        {/* KPI Metrics */}
         <StatsBar
           stats={stats}
           onNavigateToMarketing={() => setActiveTab('marketing')}
           onNavigateToInventory={() => setActiveTab('inventory')}
+          onOpenCopilotWithContext={handleOpenCopilotWithContext}
         />
 
         {/* Tab Navigation */}
         <div style={{
           display: 'flex',
-          gap: '8px',
-          borderBottom: '1px solid var(--border-color)',
-          paddingBottom: '14px',
-          marginBottom: '28px',
+          gap: '6px',
+          borderBottom: '1px solid var(--border-subtle)',
+          paddingBottom: '12px',
+          marginBottom: '24px',
           overflowX: 'auto',
           whiteSpace: 'nowrap'
         }}>
@@ -278,32 +296,33 @@ export default function App() {
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '8px',
-                  padding: '10px 20px',
-                  borderRadius: '10px',
-                  border: isActive ? '1px solid #38bdf8' : '1px solid var(--border-color)',
-                  backgroundColor: isActive ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255, 255, 255, 0.03)',
-                  color: isActive ? '#38bdf8' : 'var(--text-muted)',
-                  fontWeight: 700,
-                  fontSize: '0.88rem',
+                  gap: '7px',
+                  padding: '7px 16px',
+                  borderRadius: '7px',
+                  border: isActive ? '1px solid var(--accent)' : '1px solid transparent',
+                  backgroundColor: isActive ? 'var(--accent-subtle)' : 'transparent',
+                  color: isActive ? 'var(--accent-light)' : 'var(--text-secondary)',
+                  fontWeight: 600,
+                  fontSize: '0.84rem',
                   cursor: 'pointer',
                   transition: 'all 0.15s ease'
                 }}
               >
-                <Icon size={16} />
+                <Icon size={15} />
                 <span>{tab.label}</span>
               </button>
             );
           })}
         </div>
 
-        {/* Tab Content Panels */}
+        {/* Active Tab Views */}
         {activeTab === 'boardroom' && (
           <BoardroomView
             consensusData={consensusData}
             onTriggerConsensus={handleTriggerConsensus}
             isRunning={isConsensusRunning}
             onExecuteAction={handleOpenSafeguard}
+            onOpenCopilotWithContext={handleOpenCopilotWithContext}
           />
         )}
 
@@ -315,6 +334,7 @@ export default function App() {
             lowStock={lowStock}
             onScanSale={handleScanSale}
             employees={employees}
+            onOpenCopilotWithContext={handleOpenCopilotWithContext}
           />
         )}
 
@@ -324,18 +344,14 @@ export default function App() {
             onGenerateCampaign={handleGenerateCampaign}
             products={products}
             isGenerating={isGeneratingCampaign}
+            onOpenCopilotWithContext={handleOpenCopilotWithContext}
           />
         )}
 
         {activeTab === 'workforce' && (
-          <WorkforceView employees={employees} />
-        )}
-
-        {activeTab === 'copilot' && (
-          <CopilotChat
-            messages={chatMessages}
-            onSendMessage={handleSendMessage}
-            isWaiting={isChatWaiting}
+          <WorkforceView
+            employees={employees}
+            onOpenCopilotWithContext={handleOpenCopilotWithContext}
           />
         )}
 
@@ -344,26 +360,39 @@ export default function App() {
         )}
       </main>
 
+      {/* Flagship Floating Contextual Copilot (Bottom Right) */}
+      <FloatingCopilot
+        isOpen={isCopilotOpen}
+        onToggle={() => setIsCopilotOpen(!isCopilotOpen)}
+        onClose={() => setIsCopilotOpen(false)}
+        activeTab={activeTab}
+        attachedContext={attachedContext}
+        onClearContext={handleClearContext}
+        chatMessages={chatMessages}
+        onSendMessage={handleSendMessage}
+        isWaiting={isChatWaiting}
+        onExecuteAction={handleOpenSafeguard}
+      />
+
       {/* Footer */}
       <footer style={{
-        borderTop: '1px solid var(--border-color)',
-        padding: '20px 24px',
-        textAlign: 'center',
-        color: 'var(--text-muted)',
-        fontSize: '0.8rem',
-        backgroundColor: 'rgba(10, 14, 23, 0.9)'
+        borderTop: '1px solid var(--border-subtle)',
+        padding: '16px 24px',
+        color: 'var(--text-tertiary)',
+        fontSize: '0.78rem',
+        backgroundColor: 'var(--bg-surface)'
       }}>
         <div style={{ maxWidth: '1440px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
           <div>
-            <strong>Diligent AI</strong> • Multi-Agent Operational Engine for SMBs • Microsoft Hack with Hyderabad 3.0
+            <strong>Diligent</strong> • Multi-Agent Operational Engine for SMBs • Microsoft Hack with Hyderabad 3.0
           </div>
           <div>
-            Built with xAI Grok / Groq LPU Inference & Edge Architecture • Hybrid Cloud-Edge Swarm
+            Powered by Groq 120B Parameter LPU Architecture
           </div>
         </div>
       </footer>
 
-      {/* Legal & Liability Gateway Modal */}
+      {/* Modals */}
       <LegalModal
         isOpen={isLegalModalOpen}
         onClose={() => setIsLegalModalOpen(false)}
@@ -372,7 +401,6 @@ export default function App() {
         legalData={legalData}
       />
 
-      {/* Human-in-the-Loop Safeguard Action Execution Modal */}
       <SafeguardModal
         isOpen={isSafeguardOpen}
         onClose={() => setIsSafeguardOpen(false)}
